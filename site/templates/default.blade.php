@@ -1,4 +1,4 @@
-@extends('_.layout-detail')
+@extends('_.layout')
 
 @section('layout-content')
 	<h1><?= $page->title() ?></h1>

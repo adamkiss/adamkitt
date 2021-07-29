@@ -53,7 +53,5 @@
 				<span class="mr-2 hidden 2xl:inline">2xl</span>
 		</div>
 	@endif
-
-	<div class="fixed z-50 left-1 bottom-1 text-xs opacity-60">{{ RenderTimer::get('Generate time: %03.03fms') }}</div>
 </body>
 </html>
