@@ -4,16 +4,13 @@ use Kirby\Cms\App;
 
 include '../vendor/autoload.php';
 
-$base = dirname(__DIR__, 1);
-$storage = $base . '/storage';
-
 $kirby = new App([
 	'roots' => [
 		'index'    => __DIR__,
-		'base'     => $base,
+		'base'     => $base = dirname(__DIR__, 1),
 		'content'  => $base . '/content',
 		'site'     => $base . '/site',
-		'storage'  => $storage,
+		'storage'  => $storage = $base . '/storage',
 		'accounts' => $storage . '/accounts',
 		'cache'    => $storage . '/cache',
 		'logs'     => $storage . '/logs',

@@ -4,8 +4,64 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c14582f5a8636a97cc03c07ea0d0ca34",
+    "content-hash": "194a0b6fb75497f21f61994d04703120",
     "packages": [
+        {
+            "name": "beebmx/kirby-blade",
+            "version": "3.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/beebmx/kirby-blade.git",
+                "reference": "d727aaa6f320af0d036946f44bee722df43c1d24"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/beebmx/kirby-blade/zipball/d727aaa6f320af0d036946f44bee722df43c1d24",
+                "reference": "d727aaa6f320af0d036946f44bee722df43c1d24",
+                "shasum": ""
+            },
+            "require": {
+                "getkirby/composer-installer": "^1.2",
+                "php": "^7.3|^8.0"
+            },
+            "require-dev": {
+                "illuminate/view": "^8.0",
+                "jenssegers/blade": "^1.4",
+                "ramsey/uuid": "^4.1"
+            },
+            "type": "kirby-plugin",
+            "autoload": {
+                "files": [
+                    "helpers.php"
+                ],
+                "psr-4": {
+                    "Beebmx\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fernando Gutierrez",
+                    "email": "fernando@beeb.mx"
+                }
+            ],
+            "description": "Blade template for Kirby 3",
+            "keywords": [
+                "blade",
+                "kirby",
+                "kirby-3",
+                "template",
+                "view"
+            ],
+            "support": {
+                "issues": "https://github.com/beebmx/kirby-blade/issues",
+                "source": "https://github.com/beebmx/kirby-blade/tree/3.1.0"
+            },
+            "time": "2021-06-11T23:59:09+00:00"
+        },
         {
             "name": "claviska/simpleimage",
             "version": "3.6.3",
