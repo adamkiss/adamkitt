@@ -1,3 +1,15 @@
+# Production files
+# ------------
+/public/media/panel
+/public/assets/dev
+/public/assets/dist
+/site/snippets/_assets.php
+
+# Libs
+# ------------
+/vendor
+/node_modules
+
 # System files
 # ------------
 
@@ -18,7 +30,7 @@ Icon
 # ---------------
 *.sublime-project
 *.sublime-workspace
-/.vscode
+# /.vscode
 /.idea
 
 # -------------SECURITY-------------
@@ -28,20 +40,20 @@ Icon
 # Cache Files
 # ---------------
 
-/site/cache/*
-!/site/cache/index.html
+/storage/cache/*
+!/storage/cache/index.html
 
 # Accounts
 # ---------------
 
-/site/accounts/*
-!/site/accounts/index.html
-
+#/storage/accounts/*
+#!/storage/accounts/index.html
+/storage/accounts/.logins
 # Sessions
 # ---------------
 
-/site/sessions/*
-!/site/sessions/index.html
+/storage/sessions/*
+!/storage/sessions/index.html
 
 # License
 # ---------------
