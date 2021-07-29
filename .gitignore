@@ -9,6 +9,7 @@
 # ------------
 /vendor
 /node_modules
+/site/plugins/kirby-blade
 
 # System files
 # ------------
