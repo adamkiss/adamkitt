@@ -1,0 +1,38 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+html, body {
+	font-size: 16px;
+
+	@screen md { font-size: 17px; }
+	@screen lg { font-size: 18px; }
+}
+
+body {
+	scroll-behavior: smooth
+}
+
+@layer components {
+	.container {
+		@apply max-w-2xl mx-auto;
+		@apply px-4 md:px-6 lg:px-8 xl:px-12;
+	}
+}
+
+@layer utilities {
+	[x-cloak] {
+		display: none
+	}
+}
+
+input[type=number] {
+	-moz-appearance: textfield;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	margin: 0;
+}
