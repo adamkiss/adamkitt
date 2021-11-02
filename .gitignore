@@ -1,27 +1,23 @@
 # Production files
 # ------------
-/public/media/panel
 /public/assets/dev
 /public/assets/dist
 /site/snippets/_assets.php
 
 # Libs
 # ------------
-/vendor
-/node_modules
-/site/plugins/kirby-blade
+vendor
+node_modules
 
 # System files
 # ------------
-
 Icon
 .DS_Store
 
 # Temporary files
 # ---------------
-
-/media/*
-!/media/index.html
+/public/media/*
+!/public/media/index.html
 
 # Lock files
 # ---------------
@@ -29,32 +25,18 @@ Icon
 
 # Editors
 # ---------------
+# /.vscode
 *.sublime-project
 *.sublime-workspace
-# /.vscode
 /.idea
 
-# -------------SECURITY-------------
-# NEVER publish these files via Git!
-# -------------SECURITY-------------
-
-# Cache Files
+# Storage
 # ---------------
-
+/storage/accounts/*
 /storage/cache/*
-!/storage/cache/index.html
-
-# Accounts
-# ---------------
-
-#/storage/accounts/*
-#!/storage/accounts/index.html
-/storage/accounts/.logins
-# Sessions
-# ---------------
-
+/storage/logs/*
 /storage/sessions/*
-!/storage/sessions/index.html
+!/storage/**/.gitkeep
 
 # License
 # ---------------
