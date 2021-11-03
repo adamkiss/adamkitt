@@ -20,7 +20,7 @@ project-description:
 project-author:
 	- Project author (full name)
 	- Adam Kiss
-project-authorid:
+project-authid:
 	- Project author (id)
 	- adamkiss
 project-local-domain:
