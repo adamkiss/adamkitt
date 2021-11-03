@@ -1,6 +1,6 @@
-# tpl--project-name
+# tpl-project-name
 
-> tpl--project-description
+> tpl-project-description
 
 ---
 
@@ -23,4 +23,4 @@ npm run prod
 
 Based on the [AdamKiss/Kirby-AdamKitt](https://github.com/adamkiss/kirby-adamkitt).
 
-(c) 2021 tpl--project-author, unless stated otherwise.
+(c) 2021 tpl-project-author, unless stated otherwise.

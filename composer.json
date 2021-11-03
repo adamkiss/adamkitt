@@ -1,11 +1,11 @@
 {
-    "name": "tpl--project-authorid/tpl--project-name",
-    "description": "tpl--project-description",
+    "name": "tpl-project-authorid/tpl-project-name",
+    "description": "tpl-project-description",
     "type": "project",
-    "homepage": "https://tpl--project-homepage.com",
+    "homepage": "https://tpl-project-homepage.com",
     "authors": [
         {
-            "name": "tpl--project-author"
+            "name": "tpl-project-author"
         }
     ],
     "require": {

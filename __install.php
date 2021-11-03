@@ -37,10 +37,10 @@ $templateStrings['project-name'][1] = basename(__DIR__);
 // Ask for template replacements
 foreach($templateStrings as $key => [$question, $default]) {
 	$answer = readline("{$question} [{$default}]: ");
-	$replacements["tpl--{$key}"] = $answer ? $answer : $default;
+	$replacements["tpl-{$key}"] = $answer ? $answer : $default;
 	if ($key === 'project-name') {
 		// set default project homepage to folder name (my usual)
-		$templateStrings['project-homepage.com'][1] = $replacements['tpl--project-name'];
+		$templateStrings['project-homepage.com'][1] = $replacements['tpl-project-name'];
 	}
 }
 // in these files:
