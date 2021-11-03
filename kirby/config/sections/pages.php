@@ -2,7 +2,6 @@
 
 use Kirby\Cms\Blueprint;
 use Kirby\Toolkit\A;
-use Kirby\Toolkit\Escape;
 use Kirby\Toolkit\I18n;
 
 return [
@@ -151,32 +150,25 @@ return [
             $data = [];
 
             foreach ($this->pages as $item) {
+                $panel       = $item->panel();
                 $permissions = $item->permissions();
-                $image       = $item->panelImage($this->image);
-
-                // escape the default text
-                // TODO: no longer needed in 3.6
-                $text = $item->toString($this->text);
-                if ($this->text === '{{ page.title }}') {
-                    $text = Escape::html($text);
-                }
 
                 $data[] = [
+                    'dragText'    => $panel->dragText(),
                     'id'          => $item->id(),
-                    'dragText'    => $item->dragText(),
-                    'text'        => $text,
-                    'info'        => $item->toString($this->info ?? false),
+                    'image'       => $panel->image($this->image, $this->layout),
+                    'info'        => $item->toSafeString($this->info ?? false),
+                    'link'        => $panel->url(true),
                     'parent'      => $item->parentId(),
-                    'icon'        => $item->panelIcon($image),
-                    'image'       => $image,
-                    'link'        => $item->panelUrl(true),
-                    'status'      => $item->status(),
                     'permissions' => [
                         'sort'         => $permissions->can('sort'),
                         'changeSlug'   => $permissions->can('changeSlug'),
                         'changeStatus' => $permissions->can('changeStatus'),
-                        'changeTitle'  => $permissions->can('changeTitle')
-                    ]
+                        'changeTitle'  => $permissions->can('changeTitle'),
+                    ],
+                    'status'      => $item->status(),
+                    'template'    => $item->intendedTemplate()->name(),
+                    'text'        => $item->toSafeString($this->text),
                 ];
             }
 
@@ -226,8 +218,8 @@ return [
             return true;
         },
         'link' => function () {
-            $modelLink  = $this->model->panelUrl(true);
-            $parentLink = $this->parent->panelUrl(true);
+            $modelLink  = $this->model->panel()->url(true);
+            $parentLink = $this->parent->panel()->url(true);
 
             if ($modelLink !== $parentLink) {
                 return $parentLink;
