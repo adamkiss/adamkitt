@@ -13,6 +13,6 @@
 <link rel="icon" href="/favicon.png">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 
-<script src="/assets/vendor/alpine-3.2.2.min.js" defer></script>
+<script src="/assets/vendor/alpine-3.5.0.min.js" defer></script>
 
 <?= css(bundle('main.css')) ?>

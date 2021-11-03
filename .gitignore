@@ -8,6 +8,7 @@
 # Libs
 # ------------
 vendor
+!public/assets/vendor
 node_modules
 
 # System files
