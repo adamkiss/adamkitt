@@ -2,7 +2,6 @@ const colors = require('tailwindcss/colors')
 const defaultConfig = require('tailwindcss/defaultConfig')
 
 module.exports = {
-	mode: 'jit',
 	darkMode: 'media',
 	theme: {
 		screens: {
@@ -11,7 +10,7 @@ module.exports = {
 		},
 		extend: {
 			colors: {
-				gray: colors.trueGray,
+				gray: colors.neutral,
 			}
 		}
 	},
@@ -20,14 +19,14 @@ module.exports = {
 	corePlugins: {
 		container: false,
 	},
-	purge: {
-		content: [
-			'./site/templates/**/*.php',
-			'./site/snippets/**/*.php',
-			'./assets/**/*.js'
-		],
-		options: {
-			safelist: [/^styled-html/]
-		},
-	}
+	content: [
+		'./content/**/*.txt',
+		'./site/layouts/**/*.php',
+		'./site/templates/**/*.php',
+		'./site/snippets/**/*.php',
+		'./assets/**/*.js'
+	],
+	options: {
+		safelist: [/^styled-html/]
+	},
 }
