@@ -65,7 +65,7 @@ Next steps:
 
 cd public && valet link {$replacements['tpl-project-local-domain']} && cd ..
 g this
-g create -pd '{$replacements['tpl-project-description']}' -h '{$replacements['tpl-project-homepage.com']}'
+g create -pd '{$replacements['tpl-project-description']}' -h 'https://{$replacements['tpl-project-homepage.com']}'
 
 You have to run those yourself.
 👋
