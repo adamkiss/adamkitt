@@ -1,1 +1,6 @@
 Title: Home
+
+----
+
+Text:
+Welcome to tpl--project-homepage.com. Have fun creating it.

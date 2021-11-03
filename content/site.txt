@@ -1,1 +1,1 @@
-Title: Site Title
+Title: tpl--project-homepage.com

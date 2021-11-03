@@ -5,7 +5,8 @@
 
 <div class="container">
 	<h1><?= $page->title() ?></h1>
-	<?= $page->content()->kt() ?>
+
+	<?= $page->text()->kt() ?>
 </div>
 
 <?php endslot() ?>
