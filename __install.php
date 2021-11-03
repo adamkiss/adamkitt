@@ -6,9 +6,9 @@ catch (Throwable $th) {
 } finally { require_once __DIR__ . '/vendor/autoload.php'; }
 
 use Kirby\Data\Data;
-use Kirby\Toolkit\A;
 use Kirby\Toolkit\Str;
 use Kirby\Filesystem\F;
+use Kirby\Filesystem\Dir;
 
 $templateStrings = Data::decode(<<<YAML
 project-name:
@@ -20,23 +20,28 @@ project-description:
 project-author:
 	- Project author (full name)
 	- Adam Kiss
-project-author-id:
+project-authorid:
 	- Project author (id)
 	- adamkiss
-local-project-domain:
+project-local-domain:
 	- Local project domain (without .test)
 	- project
 project-homepage.com:
 	- Live project domain
 	- adamkiss.com
 YAML, 'yaml');
+$replacements = [];
 
-// Special defaults
-$templateStrings['project_name'][1] = basename(__DIR__);
-$templateStrings['live_project_domain'][1] = $templateStrings['project_name'][1];
-// Ask for replacements
+// Set default project name to dirname
+$templateStrings['project-name'][1] = basename(__DIR__);
+// Ask for template replacements
 foreach($templateStrings as $key => [$question, $default]) {
-	$templateStrings[$key] = readline("{$question} [{$default}]: ") ?? '';
+	$answer = readline("{$question} [{$default}]: ");
+	$replacements["tpl--{$key}"] = $answer ? $answer : $default;
+	if ($key === 'project-name') {
+		// set default project homepage to folder name (my usual)
+		$templateStrings['project-homepage.com'][1] = $replacements['tpl--project-name'];
+	}
 }
 // in these files:
 $files = [
@@ -45,9 +50,10 @@ $files = [
 ];
 
 foreach($files as $file) {
-	F::write($file, Str::replace(
-		array_keys($templateStrings), array_values($templateStrings), F::read($file)
-	));
+	$original = F::read($file);
+	$replaced = Str::replace($original, array_keys($replacements), array_values($replacements));
+	F::write($file, $replaced);
 }
 
 F::remove('__install.php');
+Dir::remove('.git');

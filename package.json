@@ -1,6 +1,6 @@
 {
     "name": "tpl--project-name",
-    "description": "tpl--project-desc",
+    "description": "tpl--project-description",
     "version": "1.0.0",
     "scripts": {
         "clean:assets": "rm -rf public/assets/dev && rm -rf public/assets/dist",
@@ -22,7 +22,7 @@
         "-- ": "",
         "open": "open http://localhost:3000/"
     },
-    "author": "Adam Kiss",
+    "author": "tpl--project-author",
     "license": "UNLICENSED",
     "dependencies": {},
     "devDependencies": {

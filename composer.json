@@ -1,12 +1,11 @@
 {
-    "name": "adamkiss/tpl--project-name",
-    "description": "tpl--project-desc",
+    "name": "tpl--project-authorid/tpl--project-name",
+    "description": "tpl--project-description",
     "type": "project",
     "homepage": "https://tpl--project-homepage.com",
     "authors": [
         {
-            "name": "Adam Kiss",
-            "homepage": "https://adamkiss.com"
+            "name": "tpl--project-author"
         }
     ],
     "require": {

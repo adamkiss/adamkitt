@@ -1,6 +1,6 @@
 # tpl--project-name
 
-> tpl--project-desc
+> tpl--project-description
 
 ---
 
@@ -10,10 +10,10 @@
 composer install -no
 npm run ci
 
-# Develop
+# Develop front-end
 npm run start
-# Production Assets
-npm run dev
+# Bundle assets for production
+npm run prod
 ```
 
 ## Unstable (-alpha/-rc) dependencies
