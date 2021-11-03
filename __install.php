@@ -57,3 +57,16 @@ foreach($files as $file) {
 
 F::remove('__install.php');
 Dir::remove('.git');
+
+
+echo <<< CLI
+All installed! 🎉
+Next steps:
+
+cd public && valet link {$replacements['tpl-project-local-domain']} && cd ..
+g this
+g create -pd '{$replacements['tpl-project-description']}' -h '{$replacements['tpl-project-homepage.com']}'
+
+You have to run those yourself.
+👋
+CLI;
