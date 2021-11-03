@@ -3,6 +3,7 @@
 /public/assets/dev
 /public/assets/dist
 /site/snippets/_assets.php
+/public/janitor-*
 
 # Libs
 # ------------
