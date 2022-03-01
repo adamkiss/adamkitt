@@ -138,7 +138,7 @@ class Dom
      */
     public function body()
     {
-        return $this->body = $this->body ?? $this->query('/html/body')[0] ?? null;
+        return $this->body ??= $this->query('/html/body')[0] ?? null;
     }
 
     /**
@@ -247,9 +247,7 @@ class Dom
                 $options['allowedAttrPrefixes'],
                 $attr,
                 $options,
-                function ($expected, $real): bool {
-                    return Str::startsWith($real, $expected);
-                }
+                fn ($expected, $real): bool => Str::startsWith($real, $expected)
             ) !== false
         ) {
             return true;
@@ -450,16 +448,23 @@ class Dom
         $localName         = $node->localName;
 
         if ($compare === null) {
-            $compare = function ($expected, $real): bool {
-                return $expected === $real;
-            };
+            $compare = fn ($expected, $real): bool => $expected === $real;
         }
 
-        if ($allowedNamespaces === true) {
-            // take the list as it is and only consider
+        // if the configuration does not define namespace URIs or if the
+        // currently checked node is from the special `xml:` namespace
+        // that has a fixed namespace according to the XML spec...
+        if ($allowedNamespaces === true || $node->namespaceURI === 'http://www.w3.org/XML/1998/namespace') {
+            // ...take the list as it is and only consider
             // exact matches of the local name (which will
             // contain a namespace if that namespace name
             // is not defined in the document)
+
+            // the list contains the `xml:` prefix, so add it to the name as well
+            if ($node->namespaceURI === 'http://www.w3.org/XML/1998/namespace') {
+                $localName = 'xml:' . $localName;
+            }
+
             foreach ($list as $item) {
                 if ($compare($item, $localName) === true) {
                     return $item;
@@ -822,9 +827,7 @@ class Dom
                 $options['disallowedTags'],
                 $element,
                 $options,
-                function ($expected, $real): bool {
-                    return Str::lower($expected) === Str::lower($real);
-                }
+                fn ($expected, $real): bool => Str::lower($expected) === Str::lower($real)
             ) !== false
         ) {
             $errors[] = new InvalidArgumentException(

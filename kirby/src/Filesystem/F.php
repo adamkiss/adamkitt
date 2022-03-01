@@ -475,11 +475,7 @@ class F
 
         $modified = filemtime($file);
 
-        if (is_null($format) === true) {
-            return $modified;
-        }
-
-        return $handler($format, $modified);
+        return Str::date($modified, $format, $handler);
     }
 
     /**
@@ -760,9 +756,11 @@ class F
     public static function size($file): int
     {
         if (is_array($file) === true) {
-            return array_reduce($file, function ($total, $file) {
-                return $total + F::size($file);
-            }, 0);
+            return array_reduce(
+                $file,
+                fn ($total, $file) => $total + F::size($file),
+                0
+            );
         }
 
         try {

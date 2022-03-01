@@ -109,14 +109,14 @@
 
   "error.license.format": "Gildur leyfiskóði hér",
   "error.license.email": "Almennilegt netfang hér",
-  "error.license.verification": "Ekki heppnaðist að staðfest leyfið",
+  "error.license.verification": "Ekki heppnaðist að staðfesta leyfið",
 
   "error.offline": "Stjórnborðið er óvirkt eins og stendur.",
 
   "error.page.changeSlug.permission": "Þú hefur ekkert leyfi til þess að breyta slóðarforskeytinu fyrir  \"{slug}\"",
   "error.page.changeStatus.incomplete": "Það eru villur á síðunni og við getum ekki gefið hana út",
   "error.page.changeStatus.permission": "Stöðu síðunnar var ekki hægt að breyta",
-  "error.page.changeStatus.toDraft.invalid": "Síðunn \"{slug}\" er ekki hægt að breyta í uppkast",
+  "error.page.changeStatus.toDraft.invalid": "Síðunni \"{slug}\" er ekki hægt að breyta í uppkast",
   "error.page.changeTemplate.invalid": "Sniðmáti fyrir síðuna \"{slug}\" er ekki hægt að breyta",
   "error.page.changeTemplate.permission": "Þú hefur engan veginn leyfi til að breyta sniðmáti fyrir síðuna \"{slug}\"",
   "error.page.changeTitle.empty": "Titillinn getur ekki verið óskilgreindur",
@@ -156,6 +156,8 @@
   "error.site.update.permission": "Þú mátt ekkert uppfæra vefsvæðið",
 
   "error.template.default.notFound": "Ekkert sjálfgefið sniðmát fannst",
+
+  "error.unexpected": "Það átti sér stað óvænt villa. Notaðu lúsarleitarhaminn (e. debug mode) til að skilja þetta betur. \nFyrir nánari upplýsingar: https://getkirby.com/docs/reference/system/options/debug",
 
   "error.user.changeEmail.permission": "Þú mátt ekkert breyta netfangi notandans \"{name}\"",
   "error.user.changeLanguage.permission": "Þú hefur ekki leyfi til að breyta tungumáli notandans \"{name}\"",
@@ -201,7 +203,7 @@
   "error.validation.ip": "Skráðu ákjósanlega IP tölu",
   "error.validation.less": "Skráðu gildi lægra en {max}",
   "error.validation.match": "Gildið er ekki eftir væntingum",
-  "error.validation.max": "Skráð gildi sem er ekki hærra en {max}",
+  "error.validation.max": "Skráðu gildi sem er ekki hærra en {max}",
   "error.validation.maxlength": "Veldu eitthvað styttra. (hámark {max} stafir)",
   "error.validation.maxwords": "Ekki skrá fleiri en {max}. orð",
   "error.validation.min": "Skráðu gildi ekki lægra en {min}",
@@ -211,7 +213,7 @@
   "error.validation.notcontains": "Skráðu eitthvað sem inniheldur ekki \"{needle}\"",
   "error.validation.notin": "Ekki skrá neitt af þessu: ({notIn})",
   "error.validation.option": "Veldu ákjósanlegan kost",
-  "error.validation.num": "Skráðu ákjósanlega tölu",
+  "error.validation.num": "Notaðu tölugildi",
   "error.validation.required": "Skráðu eitthvað",
   "error.validation.same": "Skráðu \"{other}\"",
   "error.validation.size": "Gildið þarf að vera \"{size}\"",
@@ -235,7 +237,7 @@
   "field.blocks.delete.confirm.selected": "Viltu virkilega eyða völdum bálkum?",
   "field.blocks.empty": "Öngvir bálkar enn",
   "field.blocks.fieldsets.label": "Veldu bálkagerð …",
-  "field.blocks.fieldsets.paste": "Notaðu 1{{ shortcut }}1 flýtilyklaaðgerðina til að setja blokkina hér.",
+  "field.blocks.fieldsets.paste": "Notaðu<kbd> {{ shortcut }}</kbd> flýtilyklaaðgerðina til að setja blokkina hér.",
   "field.blocks.gallery.name": "Myndasafn",
   "field.blocks.gallery.images.empty": "Engar myndir enn",
   "field.blocks.gallery.images.label": "Myndir",
@@ -356,7 +358,7 @@
   "login.code.label.login": "Innskráningarkóði",
   "login.code.label.password-reset": "Kóði fyrir endurstillingu lykilorðs",
   "login.code.placeholder.email": "000 000",
-  "login.code.text.email": "Ef netfangið (e. email) þitt er skráð þá bíður þín nýr tölvupóstur.",
+  "login.code.text.email": "Ef netfangið þitt er skráð þá bíður þín nýr tölvupóstur.",
   "login.email.login.body": "Já halló {user.nameOrEmail},\n\nNýlega baðstu um innskráningarkóða fyrir bakendan á sorli.is.\nEftirfarandi kóði er virkur í  {timeout} mínútur:\n\n{code}\n\nEf þú óskaðir ekki eftir þessu þá hunsaðu þennan tölvupóst eða talaðu við vefstjóran ef þú vilt fræðast nánar.\nAf öryggisástæðum vinsamlegast áframsendu þennan tölvupóst ALLS EKKI.",
   "login.email.login.subject": "Innskráningarkóðinn þinn",
   "login.email.password-reset.body": "Nei halló {user.nameOrEmail},\n\nNýverið baðstu um að lykilorði þínu væri endurstillt fyrir bakendan á sorli.is. \nEftirfarandi kóði er virkur í  {timeout} mínútur:\n\n{code}\n\nEf þú óskaðir ekki eftir þessu þá hunsaðu þennan tölvupóst eða talaðu við vefstjóran ef þú vilt fræðast nánar.\nAf öryggisástæðum vinsamlegast áframsendu þennan tölvupóst ALLS EKKI.",
@@ -504,7 +506,7 @@
 
   "translation.author": "Kirby Teymið",
   "translation.direction": "ltr",
-  "translation.name": "Íslenska A137",
+  "translation.name": "Íslenska",
   "translation.locale": "is_IS",
 
   "upload": "Hlaða inn",
@@ -523,7 +525,7 @@
   "upload.progress": "Hleð inn…",
 
   "url": "Slóð",
-  "url.placeholder": "https://hvitur.is",
+  "url.placeholder": "https://tildaem.is/",
 
   "user": "Notandi",
   "user.blueprint": "Þér er óhætt að skilgreina fleiri svæði fyrir þetta notenda hlutverk í <strong>/site/blueprints/users/{role}.yml</strong>",

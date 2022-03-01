@@ -84,13 +84,11 @@ class LayoutField extends BlocksField
 
                 return Layout::factory([
                     'attrs'   => $attrs,
-                    'columns' => array_map(function ($width) {
-                        return [
-                            'blocks' => [],
-                            'id'     => uuid(),
-                            'width'  => $width,
-                        ];
-                    }, $columns)
+                    'columns' => array_map(fn ($width) => [
+                        'blocks' => [],
+                        'id'     => uuid(),
+                        'width'  => $width,
+                    ], $columns)
                 ])->toArray();
             },
         ];
@@ -116,9 +114,10 @@ class LayoutField extends BlocksField
 
     protected function setLayouts(array $layouts = [])
     {
-        $this->layouts = array_map(function ($layout) {
-            return Str::split($layout);
-        }, $layouts);
+        $this->layouts = array_map(
+            fn ($layout) => Str::split($layout),
+            $layouts
+        );
     }
 
     protected function setSettings($settings = null)

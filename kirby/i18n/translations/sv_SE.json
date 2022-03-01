@@ -1,10 +1,10 @@
 {
-  "account.changeName": "Change your name",
-  "account.delete": "Delete your account",
-  "account.delete.confirm": "Do you really want to delete your account? You will be logged out immediately. Your account cannot be recovered.",
+  "account.changeName": "Ändra ditt namn",
+  "account.delete": "Radera ditt konto",
+  "account.delete.confirm": "Vill du verkligen radera ditt konto? Du kommer att loggas ut omedelbart. Ditt konto kan inte återställas.",
 
   "add": "L\u00e4gg till",
-  "author": "Author",
+  "author": "Författare",
   "avatar": "Profilbild",
   "back": "Tillbaka",
   "cancel": "Avbryt",
@@ -29,7 +29,7 @@
   "days.tue": "Tis",
   "days.wed": "Ons",
 
-  "debugging": "Debugging",
+  "debugging": "Felsökning",
 
   "delete": "Radera",
   "delete.all": "Radera allt",
@@ -49,7 +49,7 @@
   "email": "E-postadress",
   "email.placeholder": "namn@exempel.se",
 
-  "environment": "Environment",
+  "environment": "Miljö",
 
   "error.access.code": "Ogiltig kod",
   "error.access.login": "Ogiltig inloggning",
@@ -111,7 +111,7 @@
   "error.license.email": "Ange en giltig e-postadress",
   "error.license.verification": "Licensen kunde inte verifieras",
 
-  "error.offline": "The Panel is currently offline",
+  "error.offline": "Panelen är för närvarande offline",
 
   "error.page.changeSlug.permission": "Du har inte behörighet att ändra URL-appendixen för \"{slug}\"",
   "error.page.changeStatus.incomplete": "Sidan innehåller fel och kan inte publiceras",
@@ -156,6 +156,8 @@
   "error.site.update.permission": "Du har inte behörighet att uppdatera webbplatsen",
 
   "error.template.default.notFound": "Standardmallen existerar inte",
+
+  "error.unexpected": "An unexpected error occurred! Enable debug mode for more info: https://getkirby.com/docs/reference/system/options/debug",
 
   "error.user.changeEmail.permission": "Du har inte behörighet att ändra e-postadressen för användaren \"{name}\"",
   "error.user.changeLanguage.permission": "Du har inte behörighet att ändra språket för användaren \"{name}\"",
@@ -440,7 +442,7 @@
   "paste": "Klistra in",
   "paste.after": "Klistra in efter",
   "pixel": "Pixel",
-  "plugins": "Plugins",
+  "plugins": "Tillägg",
   "prev": "Föregående",
   "preview": "Förhandsgranska",
   "remove": "Ta bort",

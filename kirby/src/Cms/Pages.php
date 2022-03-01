@@ -151,7 +151,7 @@ class Pages extends Collection
      */
     public static function factory(array $pages, Model $model = null, bool $draft = false)
     {
-        $model    = $model ?? App::instance()->site();
+        $model  ??= App::instance()->site();
         $children = new static([], $model);
         $kirby    = $model->kirby();
 
@@ -205,6 +205,10 @@ class Pages extends Collection
      */
     public function findById(string $id = null)
     {
+        if ($id === null) {
+            return null;
+        }
+
         // remove trailing or leading slashes
         $id = trim($id, '/');
 

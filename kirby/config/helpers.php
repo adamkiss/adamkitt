@@ -8,6 +8,7 @@ use Kirby\Exception\InvalidArgumentException;
 use Kirby\Filesystem\Asset;
 use Kirby\Filesystem\F;
 use Kirby\Http\Router;
+use Kirby\Toolkit\Date;
 use Kirby\Toolkit\Escape;
 use Kirby\Toolkit\I18n;
 use Kirby\Toolkit\Str;
@@ -98,10 +99,7 @@ function csrf(?string $check = null)
 function css($url, $options = null): ?string
 {
     if (is_array($url) === true) {
-        $links = array_map(function ($url) use ($options) {
-            return css($url, $options);
-        }, $url);
-
+        $links = A::map($url, fn ($url) => css($url, $options));
         return implode(PHP_EOL, $links);
     }
 
@@ -117,11 +115,18 @@ function css($url, $options = null): ?string
         }
     }
 
+    // only valid value for 'rel' is 'alternate stylesheet', if 'title' is given as well
+    if (
+        ($options['rel'] ?? '') !== 'alternate stylesheet' ||
+        ($options['title'] ?? '') === ''
+    ) {
+        $options['rel'] = 'stylesheet';
+    }
+
     $url  = ($kirby->component('css'))($kirby, $url, $options);
     $url  = Url::to($url);
     $attr = array_merge((array)$options, [
-        'href' => $url,
-        'rel'  => 'stylesheet'
+        'href' => $url
     ]);
 
     return '<link ' . attr($attr) . '>';
@@ -373,10 +378,7 @@ function invalid(array $data = [], array $rules = [], array $messages = []): arr
 function js($url, $options = null): ?string
 {
     if (is_array($url) === true) {
-        $scripts = array_map(function ($url) use ($options) {
-            return js($url, $options);
-        }, $url);
-
+        $scripts = A::map($url, fn ($url) => js($url, $options));
         return implode(PHP_EOL, $scripts);
     }
 
@@ -533,11 +535,12 @@ function load(array $classmap, ?string $base = null)
  * `$kirby->markdown($text)`
  *
  * @param string|null $text
+ * @param array $options
  * @return string
  */
-function markdown(?string $text = null): string
+function markdown(?string $text = null, array $options = []): string
 {
-    return App::instance()->markdown($text);
+    return App::instance()->markdown($text, $options);
 }
 
 /**
@@ -584,7 +587,7 @@ function page(...$id)
  */
 function pages(...$id)
 {
-    if (count($id) === 1) {
+    if (count($id) === 1 && is_array($id[0]) === false) {
         // @codeCoverageIgnoreStart
         deprecated('Passing a single id to the `pages()` helper will return a Kirby\Cms\Pages collection with a single element instead of the single Kirby\Cms\Page object itself - starting in 3.7.0.');
         // @codeCoverageIgnoreEnd
@@ -791,60 +794,19 @@ function tc(string $key, int $count)
  */
 function timestamp(?string $date = null, $step = null): ?int
 {
-    if (V::date($date) === false) {
-        return null;
-    }
-
-    $date = strtotime($date);
-
-    if ($step === null) {
-        return $date;
-    }
-
-    // fallback for pre-3.5.0 usage
-    if (is_int($step) === true) {
-        $step = [
-            'unit' => 'minute',
-            'size' => $step
-        ];
-    }
-
-    if (is_array($step) === false) {
-        return $date;
-    }
-
-    $parts = [
-        'second' => date('s', $date),
-        'minute' => date('i', $date),
-        'hour'   => date('H', $date),
-        'day'    => date('d', $date),
-        'month'  => date('m', $date),
-        'year'   => date('Y', $date),
-    ];
-
-    $current = $parts[$step['unit']];
-    $nearest = round($current / $step['size']) * $step['size'];
-    $parts[$step['unit']] = $nearest;
-
-    foreach ($parts as $part => $value) {
-        if ($part === $step['unit']) {
-            break;
+    if ($date = Date::optional($date)) {
+        if ($step !== null) {
+            $step = Date::stepConfig($step, [
+                'unit' => 'minute',
+                'size' => 1
+            ]);
+            $date->round($step['unit'], $step['size']);
         }
 
-        $parts[$part] = 0;
+        return $date->timestamp();
     }
 
-    $timestamp = strtotime(
-        $parts['year'] . '-' .
-        str_pad($parts['month'], 2, 0, STR_PAD_LEFT) . '-' .
-        str_pad($parts['day'], 2, 0, STR_PAD_LEFT) . ' ' .
-        str_pad($parts['hour'], 2, 0, STR_PAD_LEFT) . ':' .
-        str_pad($parts['minute'], 2, 0, STR_PAD_LEFT) . ':' .
-        str_pad($parts['second'], 2, 0, STR_PAD_LEFT)
-    );
-
-    // on error, convert `false` into `null`
-    return $timestamp ?? null;
+    return null;
 }
 
 /**
