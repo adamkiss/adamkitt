@@ -13,7 +13,7 @@
         "watch:bs": "browser-sync start --port 3000 --proxy 'http://tpl-project-local-domain.test/' --watch --files 'content' 'site' --open",
         "watch": "NODE_ENV=development run-p watch:*",
         "-- build": "",
-        "build:css": "tailwindcss -i assets/main.css -o public/assets/dev/main.css --postcss",
+        "build:css": "tailwindcss -i assets/main.css -o public/assets/dist/main.css --postcss",
         "--build:js": "esbuild --bundle --target=es6 --minify assets/*.js --outdir=public/assets/dist",
         "build:assets": "NODE_ENV=production run-p build:css",
         "--": "",
