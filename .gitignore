@@ -11,6 +11,10 @@ vendor
 !public/assets/vendor
 node_modules
 
+# Plugins
+# ------------
+site/plugins/layouts
+
 # System files
 # ------------
 Icon
