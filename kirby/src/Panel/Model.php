@@ -3,6 +3,7 @@
 namespace Kirby\Panel;
 
 use Kirby\Form\Form;
+use Kirby\Http\Uri;
 use Kirby\Toolkit\A;
 
 /**
@@ -12,7 +13,7 @@ use Kirby\Toolkit\A;
  * @package   Kirby Panel
  * @author    Nico Hoffmann <nico@getkirby.com>
  * @link      https://getkirby.com
- * @copyright Bastian Allgeier GmbH
+ * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */
 abstract class Model
@@ -385,6 +386,36 @@ abstract class Model
             'link'    => $this->url(true),
             'tooltip' => (string)$this->model->{$tooltip}()
         ];
+    }
+
+    /**
+     * Returns link url and tooltip
+     * for optional sibling model and
+     * preserves tab selection
+     *
+     * @internal
+     *
+     * @param \Kirby\Cms\ModelWithContent|null $model
+     * @param string $tooltip
+     * @return array
+     */
+    protected function toPrevNextLink($model = null, string $tooltip = 'title'): ?array
+    {
+        if ($model === null) {
+            return null;
+        }
+
+        $data = $model->panel()->toLink($tooltip);
+
+        if ($tab = get('tab')) {
+            $uri = new Uri($data['link'], [
+                'query' => ['tab' => $tab]
+            ]);
+
+            $data['link'] = $uri->toString();
+        }
+
+        return $data;
     }
 
     /**

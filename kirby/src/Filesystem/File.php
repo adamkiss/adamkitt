@@ -20,7 +20,7 @@ use Kirby\Toolkit\V;
  * @package   Kirby Filesystem
  * @author    Nico Hoffmann <nico@getkirby.com>
  * @link      https://getkirby.com
- * @copyright Bastian Allgeier GmbH
+ * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */
 class File
@@ -372,11 +372,11 @@ class File
     /**
      * Returns the file's last modification time
      *
-     * @param string $format
-     * @param string|null $handler date or strftime
+     * @param string|\IntlDateFormatter|null $format
+     * @param string|null $handler date, intl or strftime
      * @return mixed
      */
-    public function modified(?string $format = null, ?string $handler = null)
+    public function modified($format = null, ?string $handler = null)
     {
         $kirby = $this->kirby();
 

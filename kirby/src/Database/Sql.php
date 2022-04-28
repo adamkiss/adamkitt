@@ -12,7 +12,7 @@ use Kirby\Toolkit\Str;
  * @package   Kirby Database
  * @author    Bastian Allgeier <bastian@getkirby.com>
  * @link      https://getkirby.com
- * @copyright Bastian Allgeier GmbH
+ * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
 abstract class Sql
@@ -155,7 +155,7 @@ abstract class Sql
      *
      * @param $table string
      * @param $column string
-     * @param $values boolean Whether the identifier is going to be used for a VALUES clause;
+     * @param $values bool Whether the identifier is going to be used for a VALUES clause;
      *                        only relevant for SQLite
      * @return string
      */
@@ -853,8 +853,14 @@ abstract class Sql
         $query    = [];
         $bindings = [];
 
-        foreach ($values as $key => $value) {
-            $fields[] = $this->columnName($table, $key, $enforceQualified);
+        foreach ($values as $column => $value) {
+            $key = $this->columnName($table, $column, $enforceQualified);
+
+            if ($key === null) {
+                continue;
+            }
+
+            $fields[] = $key;
 
             if (in_array($value, static::$literals, true) === true) {
                 $query[] = $value ?: 'null';
@@ -895,6 +901,10 @@ abstract class Sql
 
         foreach ($values as $column => $value) {
             $key = $this->columnName($table, $column, $enforceQualified);
+
+            if ($key === null) {
+                continue;
+            }
 
             if (in_array($value, static::$literals, true) === true) {
                 $query[] = $key . ' = ' . ($value ?: 'null');

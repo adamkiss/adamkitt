@@ -9,11 +9,16 @@ namespace Kirby\Panel;
  * @package   Kirby Panel
  * @author    Nico Hoffmann <nico@getkirby.com>
  * @link      https://getkirby.com
- * @copyright Bastian Allgeier GmbH
+ * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */
 class Page extends Model
 {
+    /**
+     * @var \Kirby\Cms\Page
+     */
+    protected $model;
+
     /**
      * Breadcrumb array
      *
@@ -309,14 +314,8 @@ class Page extends Model
         };
 
         return [
-            'next' => function () use ($siblings) {
-                $next = $siblings('next')->first();
-                return $next ? $next->panel()->toLink('title') : null;
-            },
-            'prev'   => function () use ($siblings) {
-                $prev = $siblings('prev')->last();
-                return $prev ? $prev->panel()->toLink('title') : null;
-            }
+            'next' => fn () => $this->toPrevNextLink($siblings('next')->first()),
+            'prev' => fn () => $this->toPrevNextLink($siblings('prev')->last())
         ];
     }
 

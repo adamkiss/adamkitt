@@ -9,11 +9,16 @@ namespace Kirby\Panel;
  * @package   Kirby Panel
  * @author    Nico Hoffmann <nico@getkirby.com>
  * @link      https://getkirby.com
- * @copyright Bastian Allgeier GmbH
+ * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */
 class Site extends Model
 {
+    /**
+     * @var \Kirby\Cms\Site
+     */
+    protected $model;
+
     /**
      * Returns the setup for a dropdown option
      * which is used in the changes dropdown

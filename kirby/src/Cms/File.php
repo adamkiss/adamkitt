@@ -25,18 +25,18 @@ use Kirby\Toolkit\Str;
  * @package   Kirby Cms
  * @author    Bastian Allgeier <bastian@getkirby.com>
  * @link      https://getkirby.com
- * @copyright Bastian Allgeier GmbH
+ * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */
 class File extends ModelWithContent
 {
-    const CLASS_ALIAS = 'file';
-
     use FileActions;
     use FileModifications;
     use HasMethods;
     use HasSiblings;
     use IsFile;
+
+    public const CLASS_ALIAS = 'file';
 
     /**
      * Cache for the initialized blueprint object
@@ -353,12 +353,12 @@ class File extends ModelWithContent
     /**
      * Get the file's last modification time.
      *
-     * @param string|null $format
-     * @param string|null $handler date or strftime
+     * @param string|\IntlDateFormatter|null $format
+     * @param string|null $handler date, intl or strftime
      * @param string|null $languageCode
      * @return mixed
      */
-    public function modified(string $format = null, string $handler = null, string $languageCode = null)
+    public function modified($format = null, string $handler = null, string $languageCode = null)
     {
         $file     = $this->modifiedFile();
         $content  = $this->modifiedContent($languageCode);

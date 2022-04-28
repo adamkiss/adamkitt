@@ -14,12 +14,12 @@ use Kirby\Toolkit\Str;
  * @package   Kirby Cms
  * @author    Bastian Allgeier <bastian@getkirby.com>
  * @link      https://getkirby.com
- * @copyright Bastian Allgeier GmbH
+ * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */
 class Fieldset extends Item
 {
-    const ITEMS_CLASS = '\Kirby\Cms\Fieldsets';
+    public const ITEMS_CLASS = '\Kirby\Cms\Fieldsets';
 
     protected $disabled;
     protected $editable;
@@ -54,7 +54,7 @@ class Fieldset extends Item
         $this->editable  = $params['editable'] ?? true;
         $this->icon      = $params['icon'] ?? null;
         $this->model     = $this->parent;
-        $this->name      = $this->createName($params['name'] ?? Str::ucfirst($this->type));
+        $this->name      = $this->createName($params['title'] ?? $params['name'] ?? Str::ucfirst($this->type));
         $this->label     = $this->createLabel($params['label'] ?? null);
         $this->preview   = $params['preview'] ?? null;
         $this->tabs      = $this->createTabs($params);
