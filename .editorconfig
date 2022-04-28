@@ -10,6 +10,10 @@ trim_trailing_whitespace = true
 indent_size = 4
 trim_trailing_whitespace = false
 
-[.{babelrc,editorconfig,eslintrc,lintstagedrc,stylelintrc},*.yml]
+[*.yml]
+indent_style = space
+indent_size = 2
+
+[.{babelrc,editorconfig,eslintrc,lintstagedrc,stylelintrc}]
 indent_style = space
 indent_size = 2
