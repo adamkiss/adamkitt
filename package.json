@@ -3,6 +3,7 @@
     "description": "tpl-project-description",
     "version": "1.0.0",
     "scripts": {
+        ".": "code .",
         "clean:assets": "rm -rf public/assets/dev && rm -rf public/assets/dist",
         "-- manifest": "",
         "manifest:dev": "NODE_ENV=development hash-and-manifest empty",
