@@ -1,5 +1,25 @@
 <?php
 
+if (! function_exists('s')) {
+	/**
+	 * Short, auto-return snippet call with support for auto-merging certain parameters
+	 *
+	 * @param string $snippetName
+	 * @param mixed ...$data
+	 */
+	function s($snippetName, ...$data) {
+		foreach ($data as $key => $value) {
+			if (
+				($key === 'content' || str_starts_with($key, 'slot-'))
+				&& is_array($data[$key])
+			) {
+				$data[$key] = implode("", $data[$key]);
+			}
+		}
+		return snippet($snippetName, $data, true);
+	}
+}
+
 /**
  * Stubbing Ray
  *
