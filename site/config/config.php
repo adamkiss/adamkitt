@@ -2,4 +2,9 @@
 
 require_once __DIR__ . '/helpers.php';
 
-return [];
+return [
+	// Panel Styling
+	'panel' => [
+		'css' => '/assets/panel/style.css'
+	],
+];
