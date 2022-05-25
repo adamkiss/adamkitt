@@ -1,0 +1,15 @@
+/** Hide the registration NAG */
+.k-registration {
+	display: none !important;
+}
+
+/** DEV COLOURS **/
+.k-topbar-button[title="Search"], .k-topbar-wrapper::after {
+	background-color: transparent !important;
+}
+.k-topbar {
+	background: black;
+	background-image: repeating-linear-gradient(135deg, black 0%, black 20px, rgba(238,185,27,.2) 20px, rgba(238,185,27,.2) 40px) !important;
+}
+
+background: repeating-linear-gradient(45deg, #3f87a6, #ebf8e1 15%, #f69d3c 20%);
