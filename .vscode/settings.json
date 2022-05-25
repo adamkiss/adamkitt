@@ -1,0 +1,5 @@
+{
+    "advancedNewFile.exclude": {
+		"/kirby": true
+    },
+}
