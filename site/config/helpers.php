@@ -7,7 +7,7 @@
  * if I forget to remove all mentions when going to prod
  */
 class FakeRay {
-	public function __call(...$args): FakeRay
+	public function __call($name, $args): FakeRay
 	{
 		return $this;
 	}
