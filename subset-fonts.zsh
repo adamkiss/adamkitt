@@ -9,7 +9,7 @@ cp ./assets/fonts-raw/* ./public/assets/fonts/
 wait
 
 for f in public/assets/fonts/*; do
-	glyphhanger --formats=woff2 --subset="$(dirname "$0")/$f" --css
+	glyphhanger --formats=woff2 --subset="$(dirname "$0")/$f" --css --LATIN --whitelist="ÁÄÉÍÓÔÚÝáäéíóôúýČĎŇŠŽčďňšžŤťŔŕĽľĹ" --string --json
 done
 
 wait
