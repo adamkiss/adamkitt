@@ -14,6 +14,9 @@ trim_trailing_whitespace = false
 indent_style = space
 indent_size = 2
 
+[site/templates/emails/*.txt.php]
+trim_trailing_whitespace = false
+
 [.{babelrc,editorconfig,eslintrc,lintstagedrc,stylelintrc}]
 indent_style = space
 indent_size = 2
