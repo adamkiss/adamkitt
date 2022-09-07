@@ -2,6 +2,9 @@
 
 use Kirby\Cms\App;
 
+define('KIRBY_HELPER_DUMP', false);
+define('KIRBY_HELPER_GO', false);
+
 include '../vendor/autoload.php';
 
 $kirby = new App([

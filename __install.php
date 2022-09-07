@@ -1,4 +1,7 @@
 <?php
+define('KIRBY_HELPER_DUMP', false);
+define('KIRBY_HELPER_GO', false);
+
 try   { @require_once __DIR__ . '/vendor/autoload.php'; }
 catch (Throwable $th) {
 	// Missing dependecies. Install them first
