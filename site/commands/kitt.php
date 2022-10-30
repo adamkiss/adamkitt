@@ -54,14 +54,14 @@ return [
 
 		// in these files:
 		$files = [
-			'./composer.json', './package.json', './README.md',
-			'./content/site.txt', './content/home/home.txt'
+			'/composer.json', '/package.json', '/README.md',
+			'/content/site.txt', '/content/home/home.txt'
 		];
 
 		foreach($files as $file) {
-			$original = F::read($file);
+			$original = F::read($root . $file);
 			$replaced = Str::replace($original, array_keys($replacements), array_values($replacements));
-			F::write($file, $replaced);
+			F::write($root . $file, $replaced);
 		}
 
 		Dir::remove($root . '/.git');
