@@ -64,7 +64,7 @@ return [
 			F::write($file, $replaced);
 		}
 
-		Dir::remove('.git');
+		Dir::remove($root . '/.git');
 
 		$cli->output(<<< CLI
 		All installed! 🎉
