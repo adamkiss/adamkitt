@@ -263,7 +263,7 @@ trait UserActions
 
 				// we can't really test for a random match
 				// @codeCoverageIgnoreStart
-			} catch (Throwable $e) {
+			} catch (Throwable) {
 				$length++;
 			}
 		} while (true);
@@ -308,12 +308,12 @@ trait UserActions
 		$path = $this->root() . '/index.php';
 
 		if (is_file($path) === true) {
-			$credentials = F::load($path);
+			$credentials = F::load($path, allowOutput: false);
 
 			return is_array($credentials) === false ? [] : $credentials;
-		} else {
-			return [];
 		}
+
+		return [];
 	}
 
 	/**

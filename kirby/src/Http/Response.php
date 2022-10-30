@@ -2,7 +2,9 @@
 
 namespace Kirby\Http;
 
+use Closure;
 use Exception;
+use Kirby\Exception\LogicException;
 use Kirby\Filesystem\F;
 use Throwable;
 
@@ -22,49 +24,33 @@ class Response
 	/**
 	 * Store for all registered headers,
 	 * which will be sent with the response
-	 *
-	 * @var array
 	 */
-	protected $headers = [];
+	protected array $headers = [];
 
 	/**
 	 * The response body
-	 *
-	 * @var string
 	 */
-	protected $body;
+	protected string $body;
 
 	/**
 	 * The HTTP response code
-	 *
-	 * @var int
 	 */
-	protected $code;
+	protected int $code;
 
 	/**
 	 * The content type for the response
-	 *
-	 * @var string
 	 */
-	protected $type;
+	protected string $type;
 
 	/**
 	 * The content type charset
-	 *
-	 * @var string
 	 */
-	protected $charset = 'UTF-8';
+	protected string $charset = 'UTF-8';
 
 	/**
 	 * Creates a new response object
-	 *
-	 * @param string $body
-	 * @param string $type
-	 * @param int $code
-	 * @param array $headers
-	 * @param string $charset
 	 */
-	public function __construct($body = '', ?string $type = null, ?int $code = null, ?array $headers = null, ?string $charset = null)
+	public function __construct(string|array $body = '', string|null $type = null, int|null $code = null, array|null $headers = null, string|null $charset = null)
 	{
 		// array construction
 		if (is_array($body) === true) {
@@ -91,8 +77,6 @@ class Response
 
 	/**
 	 * Improved `var_dump` output
-	 *
-	 * @return array
 	 */
 	public function __debugInfo(): array
 	{
@@ -103,22 +87,18 @@ class Response
 	 * Makes it possible to convert the
 	 * entire response object to a string
 	 * to send the headers and print the body
-	 *
-	 * @return string
 	 */
 	public function __toString(): string
 	{
 		try {
 			return $this->send();
-		} catch (Throwable $e) {
+		} catch (Throwable) {
 			return '';
 		}
 	}
 
 	/**
 	 * Getter for the body
-	 *
-	 * @return string
 	 */
 	public function body(): string
 	{
@@ -127,8 +107,6 @@ class Response
 
 	/**
 	 * Getter for the content type charset
-	 *
-	 * @return string
 	 */
 	public function charset(): string
 	{
@@ -137,8 +115,6 @@ class Response
 
 	/**
 	 * Getter for the HTTP status code
-	 *
-	 * @return int
 	 */
 	public function code(): int
 	{
@@ -149,12 +125,9 @@ class Response
 	 * Creates a response that triggers
 	 * a file download for the given file
 	 *
-	 * @param string $file
-	 * @param string $filename
 	 * @param array $props Custom overrides for response props (e.g. headers)
-	 * @return static
 	 */
-	public static function download(string $file, string $filename = null, array $props = [])
+	public static function download(string $file, string|null $filename = null, array $props = []): static
 	{
 		if (file_exists($file) === false) {
 			throw new Exception('The file could not be found');
@@ -186,11 +159,9 @@ class Response
 	 * Creates a response for a file and
 	 * sends the file content to the browser
 	 *
-	 * @param string $file
 	 * @param array $props Custom overrides for response props (e.g. headers)
-	 * @return static
 	 */
-	public static function file(string $file, array $props = [])
+	public static function file(string $file, array $props = []): static
 	{
 		$props = array_merge([
 			'body' => F::read($file),
@@ -206,32 +177,42 @@ class Response
 	 * Urls can be relative or absolute.
 	 * @since 3.7.0
 	 *
-	 * @param string $url
-	 * @param int $code
-	 * @return void
-	 *
 	 * @codeCoverageIgnore
 	 */
-	public static function go(string $url = '/', int $code = 302)
+	public static function go(string $url = '/', int $code = 302): void
 	{
 		die(static::redirect($url, $code));
+	}
+
+	/**
+	 * Ensures that the callback does not produce the first body output
+	 * (used to show when loading a file creates side effects)
+	 */
+	public static function guardAgainstOutput(Closure $callback, ...$args): mixed
+	{
+		$before = headers_sent();
+		$result = $callback(...$args);
+		$after  = headers_sent($file, $line);
+
+		if ($before === false && $after === true) {
+			throw new LogicException("Disallowed output from file $file:$line, possible accidental whitespace?");
+		}
+
+		return $result;
 	}
 
 	/**
 	 * Getter for single headers
 	 *
 	 * @param string $key Name of the header
-	 * @return string|null
 	 */
-	public function header(string $key): ?string
+	public function header(string $key): string|null
 	{
 		return $this->headers[$key] ?? null;
 	}
 
 	/**
 	 * Getter for all headers
-	 *
-	 * @return array
 	 */
 	public function headers(): array
 	{
@@ -241,14 +222,8 @@ class Response
 	/**
 	 * Creates a json response with appropriate
 	 * header and automatic conversion of arrays.
-	 *
-	 * @param string|array $body
-	 * @param int $code
-	 * @param bool $pretty
-	 * @param array $headers
-	 * @return static
 	 */
-	public static function json($body = '', ?int $code = null, ?bool $pretty = null, array $headers = [])
+	public static function json(string|array $body = '', int|null $code = null, bool|null $pretty = null, array $headers = []): static
 	{
 		if (is_array($body) === true) {
 			$body = json_encode($body, $pretty === true ? JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES : 0);
@@ -266,12 +241,8 @@ class Response
 	 * Creates a redirect response,
 	 * which will send the visitor to the
 	 * given location.
-	 *
-	 * @param string $location
-	 * @param int $code
-	 * @return static
 	 */
-	public static function redirect(string $location = '/', int $code = 302)
+	public static function redirect(string $location = '/', int $code = 302): static
 	{
 		return new static([
 			'code' => $code,
@@ -284,8 +255,6 @@ class Response
 	/**
 	 * Sends all registered headers and
 	 * returns the response body
-	 *
-	 * @return string
 	 */
 	public function send(): string
 	{
@@ -308,8 +277,6 @@ class Response
 	 * Converts all relevant response attributes
 	 * to an associative array for debugging,
 	 * testing or whatever.
-	 *
-	 * @return array
 	 */
 	public function toArray(): array
 	{
@@ -324,8 +291,6 @@ class Response
 
 	/**
 	 * Getter for the content type
-	 *
-	 * @return string
 	 */
 	public function type(): string
 	{

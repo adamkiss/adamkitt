@@ -20,9 +20,7 @@ class PHP extends Handler
 	/**
 	 * Converts an array to PHP file content
 	 *
-	 * @param mixed $data
 	 * @param string $indent For internal use only
-	 * @return string
 	 */
 	public static function encode($data, string $indent = ''): string
 	{
@@ -40,7 +38,7 @@ class PHP extends Handler
 				return $data ? 'true' : 'false';
 			case 'integer':
 			case 'double':
-				return $data;
+				return (string)$data;
 			default:
 				return var_export($data, true);
 		}
@@ -48,9 +46,6 @@ class PHP extends Handler
 
 	/**
 	 * PHP strings shouldn't be decoded manually
-	 *
-	 * @param mixed $string
-	 * @return array
 	 */
 	public static function decode($string): array
 	{
@@ -59,9 +54,6 @@ class PHP extends Handler
 
 	/**
 	 * Reads data from a file
-	 *
-	 * @param string $file
-	 * @return array
 	 */
 	public static function read(string $file): array
 	{
@@ -69,17 +61,13 @@ class PHP extends Handler
 			throw new Exception('The file "' . $file . '" does not exist');
 		}
 
-		return (array)F::load($file, []);
+		return (array)F::load($file, [], allowOutput: false);
 	}
 
 	/**
 	 * Creates a PHP file with the given data
-	 *
-	 * @param string $file
-	 * @param mixed $data
-	 * @return bool
 	 */
-	public static function write(string $file = null, $data = []): bool
+	public static function write(string $file, $data = []): bool
 	{
 		$php = static::encode($data);
 		$php = "<?php\n\nreturn $php;";

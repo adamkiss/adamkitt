@@ -118,7 +118,7 @@ abstract class Sql
 	 * @param bool $enforceQualified If true, a qualified identifier is returned in all cases
 	 * @return string|null Identifier or null if the table or column is invalid
 	 */
-	public function columnName(string $table, string $column, bool $enforceQualified = false): ?string
+	public function columnName(string $table, string $column, bool $enforceQualified = false): string|null
 	{
 		// ensure we have clean $table and $column values without qualified identifiers
 		list($table, $column) = $this->splitIdentifier($table, $column);
@@ -684,9 +684,9 @@ abstract class Sql
 			}
 
 			return implode(', ', $result);
-		} else {
-			return $columns;
 		}
+
+		return $columns;
 	}
 
 	/**
@@ -702,19 +702,19 @@ abstract class Sql
 		// split by dot, but only outside of quotes
 		$parts = preg_split('/(?:`[^`]*`|"[^"]*")(*SKIP)(*F)|\./', $identifier);
 
-		switch (count($parts)) {
-			case 1:
-				// non-qualified identifier
-				return [$table, $this->unquoteIdentifier($parts[0])];
+		return match (count($parts)) {
+			// non-qualified identifier
+			1 => [$table, $this->unquoteIdentifier($parts[0])],
 
-			case 2:
-				// qualified identifier
-				return [$this->unquoteIdentifier($parts[0]), $this->unquoteIdentifier($parts[1])];
+			// qualified identifier
+			2 => [
+				$this->unquoteIdentifier($parts[0]),
+				$this->unquoteIdentifier($parts[1])
+			],
 
-			default:
-				// every other number is an error
-				throw new InvalidArgumentException('Invalid identifier ' . $identifier);
-		}
+			// every other number is an error
+			default => throw new InvalidArgumentException('Invalid identifier ' . $identifier)
+		};
 	}
 
 	/**
@@ -833,9 +833,9 @@ abstract class Sql
 
 		if ($set === true) {
 			return $this->valueSet($table, $values, $separator, $enforceQualified);
-		} else {
-			return $this->valueList($table, $values, $separator, $enforceQualified);
 		}
+
+		return $this->valueList($table, $values, $separator, $enforceQualified);
 	}
 
 	/**
