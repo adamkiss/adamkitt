@@ -43,7 +43,8 @@ return [
 		$templateStrings['project-name'][1] = basename($root);
 		// Ask for template replacements
 		foreach($templateStrings as $key => [$question, $default]) {
-			$answer = $cli->prompt("{$question} [{$default}]: ");
+			$input = $cli->input("{$question} [{$default}]: ")->defaultTo($default);
+			$answer = $input->prompt();
 			$replacements["tpl-{$key}"] = $answer ? $answer : $default;
 			if ($key === 'project-name') {
 				// set default project homepage to folder name (my usual)
