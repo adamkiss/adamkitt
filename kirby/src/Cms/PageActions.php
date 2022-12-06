@@ -28,6 +28,75 @@ use Kirby\Uuid\Uuids;
 trait PageActions
 {
 	/**
+	 * Adapts necessary modifications which page uuid, page slug and files uuid
+	 * of copy objects for single or multilang environments
+	 */
+	protected function adaptCopy(Page $copy, bool $files = false, bool $children = false): Page
+	{
+		if ($this->kirby()->multilang() === true) {
+			foreach ($this->kirby()->languages() as $language) {
+				// overwrite with new UUID for the page and files
+				// for default language (remove old, add new)
+				if (
+					Uuids::enabled() === true &&
+					$language->isDefault() === true
+				) {
+					$copy = $copy->save(['uuid' => Uuid::generate()], $language->code());
+
+					// regenerate UUIDs of page files
+					if ($files !== false) {
+						foreach ($copy->files() as $file) {
+							$file->save(['uuid' => Uuid::generate()], $language->code());
+						}
+					}
+
+					// regenerate UUIDs of all page children
+					if ($children !== false) {
+						foreach ($copy->index(true) as $child) {
+							// always adapt files of subpages as they are currently always copied;
+							// but don't adapt children because we already operate on the index
+							$this->adaptCopy($child, true);
+						}
+					}
+				}
+
+				// remove all translated slugs
+				if (
+					$language->isDefault() === false &&
+					$copy->translation($language)->exists() === true
+				) {
+					$copy = $copy->save(['slug' => null], $language->code());
+				}
+			}
+
+			return $copy;
+		}
+
+		// overwrite with new UUID for the page and files (remove old, add new)
+		if (Uuids::enabled() === true) {
+			$copy = $copy->save(['uuid' => Uuid::generate()]);
+
+			// regenerate UUIDs of page files
+			if ($files !== false) {
+				foreach ($copy->files() as $file) {
+					$file->save(['uuid' => Uuid::generate()]);
+				}
+			}
+
+			// regenerate UUIDs of all page children
+			if ($children !== false) {
+				foreach ($copy->index(true) as $child) {
+					// always adapt files of subpages as they are currently always copied;
+					// but don't adapt children because we already operate on the index
+					$this->adaptCopy($child, true);
+				}
+			}
+		}
+
+		return $copy;
+	}
+
+	/**
 	 * Changes the sorting number.
 	 * The sorting number must already be correct
 	 * when the method is called.
@@ -434,19 +503,8 @@ trait PageActions
 
 		$copy = $parentModel->clone()->findPageOrDraft($slug);
 
-		// remove all translated slugs
-		if ($this->kirby()->multilang() === true) {
-			foreach ($this->kirby()->languages() as $language) {
-				if ($language->isDefault() === false && $copy->translation($language)->exists() === true) {
-					$copy = $copy->save(['slug' => null], $language->code());
-				}
-			}
-		}
-
-		// overwrite with new UUID (remove old, add new)
-		if (Uuids::enabled() === true) {
-			$copy = $copy->save(['uuid' => Uuid::generate()]);
-		}
+		// normalize copy object
+		$copy = $this->adaptCopy($copy, $files, $children);
 
 		// add copy to siblings
 		static::updateParentCollections($copy, 'append', $parentModel);
@@ -776,9 +834,9 @@ trait PageActions
 		foreach ($sorted as $key => $id) {
 			if ($id === $this->id()) {
 				continue;
-			} elseif ($sibling = $siblings->get($id)) {
-				$sibling->changeNum($key + 1);
 			}
+
+			$siblings->get($id)?->changeNum($key + 1);
 		}
 
 		$parent = $this->parentModel();

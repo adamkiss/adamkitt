@@ -16,6 +16,10 @@ use Kirby\Exception\InvalidArgumentException;
  * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
+ *
+ * @deprecated 3.8.2 Use `Kirby\Query\Query` instead
+ * // TODO: throw warnings in 3.9.0
+ * // TODO: Remove in 3.10.0
  */
 class Query
 {
@@ -161,8 +165,8 @@ class Query
 
 			// the args are everything inside the *outer* parentheses
 			$args = Str::substr($part, Str::position($part, '(') + 1, -1);
-			$args = preg_split(self::PARAMETERS, $args);
-			$args = array_map('self::parameter', $args);
+			$args = preg_split(static::PARAMETERS, $args);
+			$args = array_map([$this, 'parameter'], $args);
 
 			return compact('method', 'args');
 		}
@@ -213,7 +217,7 @@ class Query
 		if (substr($arg, 0, 1) === '[' && substr($arg, -1) === ']') {
 			$arg = substr($arg, 1, -1);
 			$arg = preg_split(self::PARAMETERS, $arg);
-			return array_map('self::parameter', $arg);
+			return array_map([$this, 'parameter'], $arg);
 		}
 
 		// resolve parameter for objects and methods itself

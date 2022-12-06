@@ -138,7 +138,10 @@ abstract class Model
 					default    => [38, 76]
 				};
 
-				if (($settings['cover'] ?? false) === false || $layout === 'cards') {
+				if (
+					($settings['cover'] ?? false) === false ||
+					$layout === 'cards'
+				) {
 					$settings['srcset'] = $image->srcset($sizes);
 				} else {
 					$settings['srcset'] = $image->srcset([
@@ -159,9 +162,7 @@ abstract class Model
 			}
 		}
 
-		if (isset($settings['query']) === true) {
-			unset($settings['query']);
-		}
+		unset($settings['query']);
 
 		// resolve remaining options defined as query
 		return A::map($settings, function ($option) {
