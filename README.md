@@ -7,8 +7,7 @@
 ## Installation
 
 ``` bash
-composer install -no
-npm run ci
+./r.sh install
 
 # Develop front-end
 npm run start
@@ -17,4 +16,4 @@ npm run prod
 ```
 Based on the [AdamKiss/Kirby-AdamKitt](https://github.com/adamkiss/kirby-adamkitt).
 
-(c) 2021 tpl-project-author, unless stated otherwise.
+(c) 2023 tpl-project-author, unless stated otherwise.

@@ -55,7 +55,7 @@ return [
 		// in these files:
 		$files = [
 			'/composer.json', '/package.json', '/README.md',
-			'/content/site.txt', '/content/home/home.txt'
+			'/content/site.txt', '/content/home/home.txt', '/r.sh'
 		];
 
 		foreach($files as $file) {
