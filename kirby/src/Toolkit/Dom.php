@@ -435,10 +435,7 @@ class Dom
 	{
 		$allowedNamespaces = $options['allowedNamespaces'];
 		$localName         = $node->localName;
-
-		if ($compare === null) {
-			$compare = fn ($expected, $real): bool => $expected === $real;
-		}
+		$compare         ??= fn ($expected, $real): bool => $expected === $real;
 
 		// if the configuration does not define namespace URIs or if the
 		// currently checked node is from the special `xml:` namespace
@@ -660,7 +657,7 @@ class Dom
 		$metaTag = $this->doc->createElement('meta');
 		$metaTag->setAttribute('http-equiv', 'Content-Type');
 		$metaTag->setAttribute('content', 'text/html; charset=utf-8');
-		$metaTag->setAttribute('id', $metaId = Str::random(10));
+		$metaTag->setAttribute('id', Str::random(10));
 		$this->doc->insertBefore($metaTag, $this->doc->documentElement);
 
 		if (
@@ -709,9 +706,7 @@ class Dom
 		// ensure that the document is encoded as UTF-8
 		// unless a different encoding was specified in
 		// the input or before exporting
-		if ($this->doc->encoding === null) {
-			$this->doc->encoding = 'UTF-8';
-		}
+		$this->doc->encoding ??= 'UTF-8';
 
 		return trim($this->doc->saveXML());
 	}
