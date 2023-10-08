@@ -5,7 +5,7 @@ use Kirby\Cms\App;
 const KIRBY_HELPER_DUMP = false;
 const KIRBY_HELPER_GO = false;
 
-include '../vendor/autoload.php';
+include __DIR__ . '/../vendor/autoload.php';
 
 $kirby = new App([
 	'roots' => [
