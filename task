@@ -1,14 +1,46 @@
 #!/usr/bin/env zsh
 # shellcheck shell=bash
 
-start () { #: prepare stuff and watch
-	npm start --loglevel=silent
+dev () { #: prepare stuff and watch
+	dev="public/assets/dev"
+	
+	npx hash-and-manifest empty
+	clean-dev
+	clean-dist
+
+	COMMANDS=(
+		# Site
+		"npx browser-sync start --port 3000 --proxy 'http://project-local-domain.test/' --watch --files 'content' 'site' --open"
+		"npx tailwindcss -i assets/main.css -o $dev/main.css --postcss --watch"
+		"npx esbuild --bundle --watch --sourcemap assets/*.js --outdir=$dev"
+	)
+	NODE_ENV=development npx concurrently -n " bs,css, js" "${COMMANDS[@]}"
 }
 prod () { #: run through the whole pipeline
-	npm run prod --loglevel=silent
+	dist="public/assets/dist"
+	export NODE_ENV=production
+	clean-dev
+	clean-dist
+	vendor-assets
+
+	# Site
+	npx tailwindcss -i assets/main.css -o $dist/main.css --postcss
+	npx esbuild --bundle --target=es6 --minify assets/*.js --outdir=$dist
+
+	npx hash-and-manifest
 }
 install () { #: Install all dependencies
 	composer install -no && pnpm i
+}
+
+clean-dev() {
+	rm -rf public/assets/dev
+}
+clean-dist() {
+	rm -rf public/assets/dist
+}
+vendor-assets() {
+	rsync -a assets/vendor public/assets
 }
 
 fonts () { #: subset fonts
@@ -38,9 +70,9 @@ r='./task'
 NAME='tpl-project-name'
 
 about () { #: show help & commands
-    echo "$NAME script runner"
-    echo "Commands:"
-    sed -nr 's/^(.*) \(\).* #: (.*)$/  \1\t\2/p' $r | expand -20
+	echo "$NAME script runner"
+	echo "Commands:"
+	sed -nr 's/^(.*) \(\).* #: (.*)$/  \1\t\2/p' $r | expand -20
 }
 
 if [[ $# -gt 0 ]]; then
@@ -53,6 +85,6 @@ if [[ $# -gt 0 ]]; then
 		echo "No command '$command'."
 	fi;
 else
-    # about
-	start
+	# about
+	dev
 fi

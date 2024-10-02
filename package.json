@@ -3,25 +3,7 @@
     "description": "tpl-project-description",
     "version": "1.0.0",
     "scripts": {
-        ".": "code .",
-        "clean:assets": "rm -rf public/assets/dev && rm -rf public/assets/dist",
-        "-- manifest": "",
-        "manifest:dev": "NODE_ENV=development hash-and-manifest empty",
-        "manifest:prod": "NODE_ENV=production hash-and-manifest",
-        "-- watch": "",
-        "watch:css": "tailwindcss -i assets/main.css -o public/assets/dev/main.css --postcss --watch",
-        "--watch:js": "esbuild --bundle --watch --sourcemap assets/*.js --outdir=public/assets/dev",
-        "watch:bs": "browser-sync start --port 3000 --proxy 'http://tpl-project-local-domain.test/' --watch --files 'content' 'site' --open",
-        "watch": "NODE_ENV=development run-p watch:*",
-        "-- build": "",
-        "build:css": "tailwindcss -i assets/main.css -o public/assets/dist/main.css --postcss",
-        "--build:js": "esbuild --bundle --target=es6 --minify assets/*.js --outdir=public/assets/dist",
-        "build:assets": "NODE_ENV=production run-p build:css",
-        "--": "",
-        "start": "run-s manifest:dev clean:assets watch",
-        "prod": "run-s clean:* && run-s build:assets manifest:prod",
-        "-- ": "",
-        "open": "open http://localhost:3000/"
+        ".": "code ."
     },
     "author": "tpl-project-author",
     "license": "UNLICENSED",
@@ -31,9 +13,11 @@
         "cssnano": "^5.1.0",
         "esbuild": "^0.17.0",
         "hash-and-manifest": "^1.0.2",
-        "npm-run-all": "^4.1.5",
         "postcss": "^8.4.7",
         "postcss-import": "^15.0.0",
         "tailwindcss": "^3.2.0"
+    },
+    "dependencies": {
+        "concurrently": "^9.0.1"
     }
 }
