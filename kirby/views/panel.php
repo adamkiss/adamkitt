@@ -1,6 +1,6 @@
 <?php
 
-use Kirby\Cms\Url;
+use Kirby\Toolkit\Html;
 
 /**
  * @var \Kirby\Cms\App $kirby
@@ -34,8 +34,8 @@ use Kirby\Cms\Url;
   <link nonce="<?= $nonce ?>" rel="stylesheet" href="<?= $css ?>">
   <?php endforeach ?>
 
-  <?php foreach ($assets['icons'] as $rel => $icon): ?>
-  <link nonce="<?= $nonce ?>" rel="<?= $rel ?>" href="<?= Url::to($icon['url']) ?>" type="<?= $icon['type'] ?>">
+  <?php foreach ($assets['icons'] as $icon): ?>
+  <?= Html::tag('link', null, $icon) ?>
   <?php endforeach ?>
 
   <?php foreach ($assets['js'] as $js): ?>
@@ -56,13 +56,8 @@ use Kirby\Cms\Url;
   <?= $icons ?>
 
   <script nonce="<?= $nonce ?>">
-    // Panel state
-    const json = <?= json_encode($fiber) ?>;
-
-    window.panel = JSON.parse(JSON.stringify(json));
-
     // Fiber setup
-    window.fiber = json;
+    window.fiber = <?= json_encode($fiber) ?>;
   </script>
 
   <?php foreach ($assets['js'] as $key => $js): ?>

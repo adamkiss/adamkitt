@@ -17,8 +17,6 @@ class SiteBlueprint extends Blueprint
 	/**
 	 * Creates a new page blueprint object
 	 * with the given props
-	 *
-	 * @param array $props
 	 */
 	public function __construct(array $props)
 	{
@@ -44,10 +42,8 @@ class SiteBlueprint extends Blueprint
 	 * The preview setting controls the "Open"
 	 * button in the panel and redirects it to a
 	 * different URL if necessary.
-	 *
-	 * @return string|bool
 	 */
-	public function preview()
+	public function preview(): string|bool
 	{
 		$preview = $this->props['options']['preview'] ?? true;
 
@@ -55,6 +51,6 @@ class SiteBlueprint extends Blueprint
 			return $this->model->toString($preview);
 		}
 
-		return $preview;
+		return $this->model->permissions()->can('preview', true);
 	}
 }

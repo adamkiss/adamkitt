@@ -23,36 +23,79 @@ use Throwable;
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */
-class Plugin extends Model
+class Plugin
 {
-	protected array $extends;
-	protected string $name;
-	protected string $root;
-
-	// caches
-	protected array|null $info = null;
+	protected PluginAssets $assets;
 	protected UpdateStatus|null $updateStatus = null;
+
+	/**
+	 * @param string $name Plugin name within Kirby (`vendor/plugin`)
+	 * @param array $extends Associative array of plugin extensions
+	 *
+	 * @throws \Kirby\Exception\InvalidArgumentException If the plugin name has an invalid format
+	 */
+	public function __construct(
+		protected string $name,
+		protected array $extends = [],
+		protected array $info = [],
+		protected string|null $root = null,
+		protected string|null $version = null,
+	) {
+		static::validateName($name);
+
+		// TODO: Remove in v7
+		if ($root = $extends['root'] ?? null) {
+			Helpers::deprecated('Plugin "' . $name . '": Passing the `root` inside the `extends` array has been deprecated. Pass it directly as named argument `root`.', 'plugin-extends-root');
+			$this->root ??= $root;
+			unset($this->extends['root']);
+		}
+
+		$this->root ??= dirname(debug_backtrace()[0]['file']);
+
+		// TODO: Remove in v7
+		if ($info = $extends['info'] ?? null) {
+			Helpers::deprecated('Plugin "' . $name . '": Passing an `info` array inside the `extends` array has been deprecated. Pass the individual entries directly as named `info` argument.', 'plugin-extends-root');
+
+			if (empty($info) === false && is_array($info) === true) {
+				$this->info = [...$info, ...$this->info];
+			}
+
+			unset($this->extends['info']);
+		}
+
+		// read composer.json and use as info fallback
+		try {
+			$info = Data::read($this->manifest());
+		} catch (Exception) {
+			// there is no manifest file or it is invalid
+			$info = [];
+		}
+
+		$this->info = [...$info, ...$this->info];
+	}
 
 	/**
 	 * Allows access to any composer.json field by method call
 	 */
-	public function __call(string $key, array $arguments = null)
+	public function __call(string $key, array $arguments = null): mixed
 	{
 		return $this->info()[$key] ?? null;
 	}
 
 	/**
-	 * @param string $name Plugin name within Kirby (`vendor/plugin`)
-	 * @param array $extends Associative array of plugin extensions
+	 * Returns the plugin asset object for a specific asset
 	 */
-	public function __construct(string $name, array $extends = [])
+	public function asset(string $path): PluginAsset|null
 	{
-		$this->setName($name);
-		$this->extends = $extends;
-		$this->root    = $extends['root'] ?? dirname(debug_backtrace()[0]['file']);
-		$this->info    = empty($extends['info']) === false && is_array($extends['info']) ? $extends['info'] : null;
+		return $this->assets()->get($path);
+	}
 
-		unset($this->extends['root'], $this->extends['info']);
+	/**
+	 * Returns the plugin assets collection
+	 */
+	public function assets(): PluginAssets
+	{
+		return $this->assets ??= PluginAssets::factory($this);
 	}
 
 	/**
@@ -96,22 +139,19 @@ class Plugin extends Model
 	}
 
 	/**
-	 * Returns the raw data from composer.json
+	 * Returns the info data (from composer.json)
 	 */
 	public function info(): array
 	{
-		if (is_array($this->info) === true) {
-			return $this->info;
-		}
+		return $this->info;
+	}
 
-		try {
-			$info = Data::read($this->manifest());
-		} catch (Exception) {
-			// there is no manifest file or it is invalid
-			$info = [];
-		}
-
-		return $this->info = $info;
+	/**
+	 * Current $kirby instance
+	 */
+	public function kirby(): App
+	{
+		return App::instance();
 	}
 
 	/**
@@ -186,23 +226,6 @@ class Plugin extends Model
 	}
 
 	/**
-	 * Validates and sets the plugin name
-	 *
-	 * @return $this
-	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException If the plugin name has an invalid format
-	 */
-	protected function setName(string $name): static
-	{
-		if (preg_match('!^[a-z0-9-]+\/[a-z0-9-]+$!i', $name) !== 1) {
-			throw new InvalidArgumentException('The plugin name must follow the format "a-z0-9-/a-z0-9-"');
-		}
-
-		$this->name = $name;
-		return $this;
-	}
-
-	/**
 	 * Returns all available plugin metadata
 	 */
 	public function toArray(): array
@@ -265,21 +288,37 @@ class Plugin extends Model
 	}
 
 	/**
+	 * Checks if the name follows the required pattern
+	 * and throws an exception if not
+	 *
+	 * @throws \Kirby\Exception\InvalidArgumentException
+	 */
+	public static function validateName(string $name): void
+	{
+		if (preg_match('!^[a-z0-9-]+\/[a-z0-9-]+$!i', $name) !== 1) {
+			throw new InvalidArgumentException('The plugin name must follow the format "a-z0-9-/a-z0-9-"');
+		}
+	}
+
+	/**
 	 * Returns the normalized version number
 	 * from the composer.json file
 	 */
 	public function version(): string|null
 	{
-		$composerName = $this->info()['name'] ?? null;
-		$version      = $this->info()['version'] ?? null;
+		$name = $this->info()['name'] ?? null;
 
 		try {
-			// if plugin doesn't have version key in composer.json file
-			// try to get version from "vendor/composer/installed.php"
-			$version ??= InstalledVersions::getPrettyVersion($composerName);
+			// try to get version from "vendor/composer/installed.php",
+			// this is the most reliable source for the version
+			$version = InstalledVersions::getPrettyVersion($name);
 		} catch (Throwable) {
-			return null;
+			$version = null;
 		}
+
+		// fallback to the version provided in the plugin's index.php: as named
+		// argument, entry in the info array or from the composer.json file
+		$version ??= $this->version ?? $this->info()['version'] ?? null;
 
 		if (
 			is_string($version) !== true ||

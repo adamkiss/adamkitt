@@ -1,5 +1,7 @@
 <?php
 
+use Kirby\Cms\ModelWithContent;
+use Kirby\Form\Form;
 use Kirby\Toolkit\I18n;
 use Kirby\Toolkit\Str;
 
@@ -20,7 +22,15 @@ return [
 			return in_array($layout, $layouts) ? $layout : 'list';
 		},
 		/**
-		 * The size option controls the size of cards. By default cards are auto-sized and the cards grid will always fill the full width. With a size you can disable auto-sizing. Available sizes: `tiny`, `small`, `medium`, `large`, `huge`
+		 * Whether the raw content file values should be used for the table column previews. Should not be used unless it eases performance issues in your setup introduced with Kirby 4.2
+		 *
+		 * @todo remove when Form classes have been refactored
+		 */
+		'rawvalues' => function (bool $rawvalues = false) {
+			return $rawvalues;
+		},
+		/**
+		 * The size option controls the size of cards. By default cards are auto-sized and the cards grid will always fill the full width. With a size you can disable auto-sizing. Available sizes: `tiny`, `small`, `medium`, `large`, `huge`, `full`
 		 */
 		'size' => function (string $size = 'auto') {
 			return $size;
@@ -28,7 +38,7 @@ return [
 	],
 	'computed' => [
 		'columns' => function () {
-			$columns = [];
+			$columns   = [];
 
 			if ($this->layout !== 'table') {
 				return [];
@@ -76,9 +86,12 @@ return [
 				// keep the original column name as id
 				$column['id'] = $columnName;
 
-				// add the custom column to the array with a key that won't
-				// override the system columns
-				$columns[$columnName . 'Cell'] = $column;
+				// add the custom column to the array
+				// allowing to extend/overwrite existing columns
+				$columns[$columnName] = [
+					...$columns[$columnName] ?? [],
+					...$column
+				];
 			}
 
 			if ($this->type === 'pages') {
@@ -94,7 +107,27 @@ return [
 		},
 	],
 	'methods' => [
-		'columnsValues' => function (array $item, $model) {
+		'columnsWithTypes' => function () {
+			$columns = $this->columns;
+
+			// add the type to the columns for the table layout
+			if ($this->layout === 'table') {
+				$blueprint = $this->models->first()?->blueprint();
+
+				if ($blueprint === null) {
+					return $columns;
+				}
+
+				foreach ($columns as $columnName => $column) {
+					if ($id = $column['id'] ?? null) {
+						$columns[$columnName]['type'] ??= $blueprint->field($id)['type'] ?? null;
+					}
+				}
+			}
+
+			return $columns;
+		},
+		'columnsValues' => function (array $item, ModelWithContent $model) {
 			$item['title'] = [
 				// override toSafeString() coming from `$item`
 				// because the table cells don't use v-html
@@ -108,19 +141,35 @@ return [
 				$item['info'] = $model->toString($this->info);
 			}
 
+			// if forcing raw values, get those directly from content file
+			// TODO: remove once Form classes have been refactored
+			// @codeCoverageIgnoreStart
+			if ($this->rawvalues === true) {
+				foreach ($this->columns as $columnName => $column) {
+					$item[$columnName] = match (empty($column['value'])) {
+						// if column value defined, resolve the query
+						false   => $model->toString($column['value']),
+						// otherwise use the form value,
+						// but don't overwrite columns
+						default => $item[$columnName] ?? $model->content()->get($column['id'] ?? $columnName)->value()
+					};
+				}
+
+				return $item;
+			}
+			// @codeCoverageIgnoreEnd
+
+			// Use form to get the proper values for the columns
+			$form = Form::for($model)->values();
+
 			foreach ($this->columns as $columnName => $column) {
-				// don't overwrite essential columns
-				if (isset($item[$columnName]) === true) {
-					continue;
-				}
-
-				if (empty($column['value']) === false) {
-					$value = $model->toString($column['value']);
-				} else {
-					$value = $model->content()->get($column['id'] ?? $columnName)->value();
-				}
-
-				$item[$columnName] = $value;
+				$item[$columnName] = match (empty($column['value'])) {
+					// if column value defined, resolve the query
+					false   => $model->toString($column['value']),
+					// otherwise use the form value,
+					// but don't overwrite columns
+					default => $item[$columnName] ?? $form[$column['id'] ?? $columnName] ?? null
+				};
 			}
 
 			return $item;

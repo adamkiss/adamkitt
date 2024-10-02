@@ -5,6 +5,7 @@ namespace Kirby\Image\Darkroom;
 use Exception;
 use Kirby\Filesystem\F;
 use Kirby\Image\Darkroom;
+use Kirby\Image\Focus;
 
 /**
  * ImageMagick
@@ -61,16 +62,8 @@ class ImageMagick extends Darkroom
 	{
 		$command = escapeshellarg($options['bin']);
 
-		// limit to single-threading to keep CPU usage sane
-		$command .= ' -limit thread 1';
-
-		// add JPEG size hint to optimize CPU and memory usage
-		if (F::mime($file) === 'image/jpeg') {
-			// add hint only when downscaling
-			if ($options['scaleWidth'] < 1 && $options['scaleHeight'] < 1) {
-				$command .= ' -define ' . escapeshellarg(sprintf('jpeg:size=%dx%d', $options['width'], $options['height']));
-			}
-		}
+		// default is limiting to single-threading to keep CPU usage sane
+		$command .= ' -limit thread ' . escapeshellarg($options['threads']);
 
 		// append input file
 		return $command . ' ' . escapeshellarg($file);
@@ -84,6 +77,7 @@ class ImageMagick extends Darkroom
 		return parent::defaults() + [
 			'bin'       => 'convert',
 			'interlace' => false,
+			'threads'   => 1,
 		];
 	}
 
@@ -97,6 +91,19 @@ class ImageMagick extends Darkroom
 		}
 
 		return null;
+	}
+
+	/**
+	 * Applies sharpening if activated in the options.
+	 */
+	protected function sharpen(string $file, array $options): string|null
+	{
+		if (is_int($options['sharpen']) === false) {
+			return null;
+		}
+
+		$amount = max(1, min(100, $options['sharpen'])) / 100;
+		return '-sharpen ' . escapeshellarg('0x' . $amount);
 	}
 
 	/**
@@ -132,6 +139,7 @@ class ImageMagick extends Darkroom
 		$command[] = $this->resize($file, $options);
 		$command[] = $this->quality($file, $options);
 		$command[] = $this->blur($file, $options);
+		$command[] = $this->sharpen($file, $options);
 		$command[] = $this->save($file, $options);
 
 		// remove all null values and join the parts
@@ -167,20 +175,39 @@ class ImageMagick extends Darkroom
 			return '-thumbnail ' . escapeshellarg(sprintf('%sx%s!', $options['width'], $options['height']));
 		}
 
-		$gravities = [
+		// crop based on focus point
+		if (Focus::isFocalPoint($options['crop']) === true) {
+			if ($focus = Focus::coords(
+				$options['crop'],
+				$options['sourceWidth'],
+				$options['sourceHeight'],
+				$options['width'],
+				$options['height']
+			)) {
+				return sprintf(
+					'-crop %sx%s+%s+%s -resize %sx%s^',
+					$focus['width'],
+					$focus['height'],
+					$focus['x1'],
+					$focus['y1'],
+					$options['width'],
+					$options['height']
+				);
+			}
+		}
+
+		// translate the gravity option into something imagemagick understands
+		$gravity = match ($options['crop'] ?? null) {
 			'top left'     => 'NorthWest',
 			'top'          => 'North',
 			'top right'    => 'NorthEast',
 			'left'         => 'West',
-			'center'       => 'Center',
 			'right'        => 'East',
 			'bottom left'  => 'SouthWest',
 			'bottom'       => 'South',
-			'bottom right' => 'SouthEast'
-		];
-
-		// translate the gravity option into something imagemagick understands
-		$gravity = $gravities[$options['crop']] ?? 'Center';
+			'bottom right' => 'SouthEast',
+			default        => 'Center'
+		};
 
 		$command  = '-thumbnail ' . escapeshellarg(sprintf('%sx%s^', $options['width'], $options['height']));
 		$command .= ' -gravity ' . escapeshellarg($gravity);

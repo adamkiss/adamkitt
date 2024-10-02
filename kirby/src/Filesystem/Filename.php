@@ -2,6 +2,7 @@
 
 namespace Kirby\Filesystem;
 
+use Kirby\Cms\Language;
 use Kirby\Toolkit\Str;
 
 /**
@@ -29,19 +30,9 @@ use Kirby\Toolkit\Str;
 class Filename
 {
 	/**
-	 * List of all applicable attributes
-	 */
-	protected array $attributes;
-
-	/**
 	 * The sanitized file extension
 	 */
 	protected string $extension;
-
-	/**
-	 * The source original filename
-	 */
-	protected string $filename;
 
 	/**
 	 * The sanitized file name
@@ -49,23 +40,22 @@ class Filename
 	protected string $name;
 
 	/**
-	 * The template for the final name
-	 */
-	protected string $template;
-
-	/**
 	 * Creates a new Filename object
+	 *
+	 * @param string $template for the final name
+	 * @param array $attributes List of all applicable attributes
 	 */
-	public function __construct(string $filename, string $template, array $attributes = [])
-	{
-		$this->filename   = $filename;
-		$this->template   = $template;
-		$this->attributes = $attributes;
-		$this->extension  = $this->sanitizeExtension(
+	public function __construct(
+		protected string $filename,
+		protected string $template,
+		protected array $attributes = [],
+		protected string|null $language = null
+	) {
+		$this->name      = $this->sanitizeName($filename);
+		$this->extension = $this->sanitizeExtension(
 			$attributes['format'] ??
 			pathinfo($filename, PATHINFO_EXTENSION)
 		);
-		$this->name       = $this->sanitizeName(pathinfo($filename, PATHINFO_FILENAME));
 	}
 
 	/**
@@ -89,6 +79,7 @@ class Filename
 			'blur'       => $this->blur(),
 			'bw'         => $this->grayscale(),
 			'q'          => $this->quality(),
+			'sharpen'    => $this->sharpen(),
 		];
 
 		$array = array_filter(
@@ -227,24 +218,49 @@ class Filename
 
 	/**
 	 * Sanitizes the file extension.
-	 * The extension will be converted
-	 * to lowercase and `jpeg` will be
-	 * replaced with `jpg`
+	 * It also replaces `jpeg` with `jpg`.
 	 */
 	protected function sanitizeExtension(string $extension): string
 	{
-		$extension = strtolower($extension);
+		$extension = F::safeExtension('test.' . $extension);
 		$extension = str_replace('jpeg', 'jpg', $extension);
 		return $extension;
 	}
 
 	/**
-	 * Sanitizes the name with Kirby's
-	 * Str::slug function
+	 * Sanitizes the file name
 	 */
 	protected function sanitizeName(string $name): string
 	{
-		return Str::slug($name);
+		// temporarily store language rules
+		$rules = Str::$language;
+
+		// add rules for a particular language to `Str` class
+		if ($this->language !== null) {
+			Str::$language = [
+				...Str::$language,
+				...Language::loadRules($this->language)];
+		}
+
+		// sanitize name
+		$name = F::safeBasename($this->filename);
+
+		// restore language rules
+		Str::$language = $rules;
+
+		return $name;
+	}
+
+	/**
+	 * Normalizes the sharpen option value
+	 */
+	public function sharpen(): int|false
+	{
+		return match ($this->attributes['sharpen'] ?? false) {
+			false   => false,
+			true    => 50,
+			default => (int)$this->attributes['sharpen']
+		};
 	}
 
 	/**

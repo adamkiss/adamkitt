@@ -2,6 +2,7 @@
 
 use Kirby\Cms\Blueprint;
 use Kirby\Cms\Page;
+use Kirby\Cms\Pages;
 use Kirby\Cms\Site;
 use Kirby\Exception\InvalidArgumentException;
 use Kirby\Toolkit\A;
@@ -30,6 +31,12 @@ return [
 			return $create;
 		},
 		/**
+		 * Filters pages by a query. Sorting will be disabled
+		 */
+		'query' => function (string|null $query = null) {
+			return $query;
+		},
+		/**
 		 * Filters pages by their status. Available status settings: `draft`, `unlisted`, `listed`, `published`, `all`.
 		 */
 		'status' => function (string $status = '') {
@@ -44,10 +51,22 @@ return [
 			return $status;
 		},
 		/**
+		 * Filters the list by single template.
+		 */
+		'template' => function (string|array $template = null) {
+			return $template;
+		},
+		/**
 		 * Filters the list by templates and sets template options when adding new pages to the section.
 		 */
 		'templates' => function ($templates = null) {
 			return A::wrap($templates ?? $this->template);
+		},
+		/**
+		 * Excludes the selected templates.
+		 */
+		'templatesIgnore' => function ($templates = null) {
+			return A::wrap($templates);
 		}
 	],
 	'computed' => [
@@ -63,14 +82,18 @@ return [
 
 			return $parent;
 		},
-		'pages' => function () {
-			$pages = match ($this->status) {
-				'draft'     => $this->parent->drafts(),
-				'listed'    => $this->parent->children()->listed(),
-				'published' => $this->parent->children(),
-				'unlisted'  => $this->parent->children()->unlisted(),
-				default     => $this->parent->childrenAndDrafts()
-			};
+		'models' => function () {
+			if ($this->query !== null) {
+				$pages = $this->parent->query($this->query, Pages::class) ?? new Pages([]);
+			} else {
+				$pages = match ($this->status) {
+					'draft'     => $this->parent->drafts(),
+					'listed'    => $this->parent->children()->listed(),
+					'published' => $this->parent->children(),
+					'unlisted'  => $this->parent->children()->unlisted(),
+					default     => $this->parent->childrenAndDrafts()
+				};
+			}
 
 			// filters pages that are protected and not in the templates list
 			// internal `filter()` method used instead of foreach loop that previously included `unset()`
@@ -78,13 +101,26 @@ return [
 			// also it has been tested that there is no performance difference
 			// even in 0.1 seconds on 100k virtual pages
 			$pages = $pages->filter(function ($page) {
-				// remove all protected pages
-				if ($page->isReadable() === false) {
+				// remove all protected and hidden pages
+				if ($page->isListable() === false) {
 					return false;
 				}
 
+				$intendedTemplate = $page->intendedTemplate()->name();
+
 				// filter by all set templates
-				if ($this->templates && in_array($page->intendedTemplate()->name(), $this->templates) === false) {
+				if (
+					$this->templates &&
+					in_array($intendedTemplate, $this->templates) === false
+				) {
+					return false;
+				}
+
+				// exclude by all ignored templates
+				if (
+					$this->templatesIgnore &&
+					in_array($intendedTemplate, $this->templatesIgnore) === true
+				) {
 					return false;
 				}
 
@@ -120,13 +156,16 @@ return [
 
 			return $pages;
 		},
+		'pages' => function () {
+			return $this->models;
+		},
 		'total' => function () {
-			return $this->pages->pagination()->total();
+			return $this->models->pagination()->total();
 		},
 		'data' => function () {
 			$data = [];
 
-			foreach ($this->pages as $page) {
+			foreach ($this->models as $page) {
 				$panel       = $page->panel();
 				$permissions = $page->permissions();
 
@@ -193,11 +232,39 @@ return [
 				return false;
 			}
 
-			if (in_array($this->status, ['draft', 'all']) === false) {
+			if ($this->isFull() === true) {
 				return false;
 			}
 
-			if ($this->isFull() === true) {
+			// form here on, we need to check with which status
+			// the pages are created and if the section can show
+			// these newly created pages
+
+			// if the section shows pages no matter what status they have,
+			// we can always show the add button
+			if ($this->status === 'all') {
+				return true;
+			}
+
+			// collect all statuses of the blueprints
+			// that are allowed to be created
+			$statuses = [];
+
+			foreach ($this->blueprintNames() as $blueprint) {
+				try {
+					$props      = Blueprint::load('pages/' . $blueprint);
+					$statuses[] = $props['create']['status'] ?? 'draft';
+				} catch (Throwable) {
+					$statuses[] = 'draft'; // @codeCoverageIgnore
+				}
+			}
+
+			$statuses = array_unique($statuses);
+
+			// if there are multiple statuses or if the section is showing
+			// a different status than new pages would be created with,
+			// we cannot show the add button
+			if (count($statuses) > 1 || $this->status !== $statuses[0]) {
 				return false;
 			}
 
@@ -210,17 +277,12 @@ return [
 	'methods' => [
 		'blueprints' => function () {
 			$blueprints = [];
-			$templates  = empty($this->create) === false ? A::wrap($this->create) : $this->templates;
-
-			if (empty($templates) === true) {
-				$templates = $this->kirby()->blueprints();
-			}
 
 			// convert every template to a usable option array
 			// for the template select box
-			foreach ($templates as $template) {
+			foreach ($this->blueprintNames() as $blueprint) {
 				try {
-					$props = Blueprint::load('pages/' . $template);
+					$props = Blueprint::load('pages/' . $blueprint);
 
 					$blueprints[] = [
 						'name'  => basename($props['name']),
@@ -228,14 +290,28 @@ return [
 					];
 				} catch (Throwable) {
 					$blueprints[] = [
-						'name'  => basename($template),
-						'title' => ucfirst($template),
+						'name'  => basename($blueprint),
+						'title' => ucfirst($blueprint),
 					];
 				}
 			}
 
 			return $blueprints;
-		}
+		},
+		'blueprintNames' => function () {
+			$blueprints  = empty($this->create) === false ? A::wrap($this->create) : $this->templates;
+
+			if (empty($blueprints) === true) {
+				$blueprints = $this->kirby()->blueprints();
+			}
+
+			// excludes ignored templates
+			if ($templatesIgnore = $this->templatesIgnore) {
+				$blueprints = array_diff($blueprints, $templatesIgnore);
+			}
+
+			return $blueprints;
+		},
 	],
 	'toArray' => function () {
 		return [
@@ -243,7 +319,7 @@ return [
 			'errors'  => $this->errors,
 			'options' => [
 				'add'      => $this->add,
-				'columns'  => $this->columns,
+				'columns'  => $this->columnsWithTypes(),
 				'empty'    => $this->empty,
 				'headline' => $this->headline,
 				'help'     => $this->help,

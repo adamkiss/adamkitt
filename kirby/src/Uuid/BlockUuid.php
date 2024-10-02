@@ -3,7 +3,7 @@
 namespace Kirby\Uuid;
 
 use Kirby\Cms\Blocks;
-use Kirby\Cms\Field;
+use Kirby\Content\Field;
 
 /**
  * UUID for \Kirby\Cms\Block
@@ -26,7 +26,7 @@ class BlockUuid extends FieldUuid
 	/**
 	 * @var \Kirby\Cms\Block|null
 	 */
-	public Identifiable|null $model;
+	public Identifiable|null $model = null;
 
 	/**
 	 * Converts content field to a Blocks collection

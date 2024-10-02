@@ -259,8 +259,11 @@ class Query
 	 * @param string $type The join type. Uses an inner join by default
 	 * @return $this
 	 */
-	public function join(string $table, string $on, string $type = 'JOIN'): static
-	{
+	public function join(
+		string $table,
+		string $on,
+		string $type = 'JOIN'
+	): static {
 		$join = [
 			'table' => $table,
 			'on'    => $on,
@@ -678,7 +681,7 @@ class Query
 		$collection = $this
 			->offset($pagination->offset())
 			->limit($pagination->limit())
-			->iterator('Kirby\Toolkit\Collection')
+			->iterator(Collection::class)
 			->all();
 
 		$this->iterator($iterator);
@@ -866,7 +869,7 @@ class Query
 					$this->bindings($args[1]);
 
 				// ->where('username like ?', 'myuser')
-				} elseif (is_string($args[0]) === true && is_string($args[1]) === true) {
+				} elseif (is_string($args[0]) === true && is_scalar($args[1]) === true) {
 					// prepared where clause
 					$result = $args[0];
 
@@ -884,9 +887,10 @@ class Query
 					$key = $sql->columnName($this->table, $args[0]);
 
 					// ->where('username', 'in', ['myuser', 'myotheruser']);
+					// ->where('quantity', 'between', [10, 50]);
 					$predicate = trim(strtoupper($args[1]));
 					if (is_array($args[2]) === true) {
-						if (in_array($predicate, ['IN', 'NOT IN']) === false) {
+						if (in_array($predicate, ['IN', 'NOT IN', 'BETWEEN', 'NOT BETWEEN']) === false) {
 							throw new InvalidArgumentException('Invalid predicate ' . $predicate);
 						}
 
@@ -900,15 +904,20 @@ class Query
 							$values[] = $valueBinding;
 						}
 
-						// add that to the where clause in parenthesis
-						$result = $key . ' ' . $predicate . ' (' . implode(', ', $values) . ')';
+						// add that to the where clause in parenthesis or seperated by AND
+						$values = match ($predicate) {
+							'IN',
+							'NOT IN'      => '(' . implode(', ', $values) . ')',
+							'BETWEEN',
+							'NOT BETWEEN' => $values[0] . ' AND ' . $values[1]
+						};
+						$result = $key . ' ' . $predicate . ' ' . $values;
 
 					// ->where('username', 'like', 'myuser');
 					} else {
 						$predicates = [
 							'=', '>=', '>', '<=', '<', '<>', '!=', '<=>',
 							'IS', 'IS NOT',
-							'BETWEEN', 'NOT BETWEEN',
 							'LIKE', 'NOT LIKE',
 							'SOUNDS LIKE',
 							'REGEXP', 'NOT REGEXP'

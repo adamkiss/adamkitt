@@ -23,7 +23,7 @@ class PageUuid extends ModelUuid
 	/**
 	 * @var \Kirby\Cms\Page|null
 	 */
-	public Identifiable|null $model;
+	public Identifiable|null $model = null;
 
 	/**
 	 * Looks up UUID in cache and resolves
@@ -31,9 +31,13 @@ class PageUuid extends ModelUuid
 	 */
 	protected function findByCache(): Page|null
 	{
-		$key   = $this->key();
-		$value = Uuids::cache()->get($key);
-		return App::instance()->page($value);
+		if ($key = $this->key()) {
+			if ($value = Uuids::cache()->get($key)) {
+				return App::instance()->page($value);
+			}
+		}
+
+		return null;
 	}
 
 	/**

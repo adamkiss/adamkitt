@@ -2,6 +2,7 @@
 
 namespace Kirby\Cms;
 
+use Closure;
 use Kirby\Exception\InvalidArgumentException;
 use Kirby\Toolkit\Component;
 
@@ -18,24 +19,15 @@ class Section extends Component
 {
 	/**
 	 * Registry for all component mixins
-	 *
-	 * @var array
 	 */
-	public static $mixins = [];
+	public static array $mixins = [];
 
 	/**
 	 * Registry for all component types
-	 *
-	 * @var array
 	 */
-	public static $types = [];
-
+	public static array $types = [];
 
 	/**
-	 * Section constructor.
-	 *
-	 * @param string $type
-	 * @param array $attrs
 	 * @throws \Kirby\Exception\InvalidArgumentException
 	 */
 	public function __construct(string $type, array $attrs = [])
@@ -44,7 +36,7 @@ class Section extends Component
 			throw new InvalidArgumentException('Undefined section model');
 		}
 
-		if ($attrs['model'] instanceof Model === false) {
+		if ($attrs['model'] instanceof ModelWithContent === false) {
 			throw new InvalidArgumentException('Invalid section model');
 		}
 
@@ -53,6 +45,21 @@ class Section extends Component
 		$attrs['type']   = $type;
 
 		parent::__construct($type, $attrs);
+	}
+
+	/**
+	 * Returns field api call
+	 */
+	public function api(): mixed
+	{
+		if (
+			isset($this->options['api']) === true &&
+			$this->options['api'] instanceof Closure
+		) {
+			return $this->options['api']->call($this);
+		}
+
+		return null;
 	}
 
 	public function errors(): array
@@ -64,25 +71,16 @@ class Section extends Component
 		return $this->errors ?? [];
 	}
 
-	/**
-	 * @return \Kirby\Cms\App
-	 */
-	public function kirby()
+	public function kirby(): App
 	{
 		return $this->model()->kirby();
 	}
 
-	/**
-	 * @return \Kirby\Cms\Model
-	 */
-	public function model()
+	public function model(): ModelWithContent
 	{
 		return $this->model;
 	}
 
-	/**
-	 * @return array
-	 */
 	public function toArray(): array
 	{
 		$array = parent::toArray();
@@ -92,9 +90,6 @@ class Section extends Component
 		return $array;
 	}
 
-	/**
-	 * @return array
-	 */
 	public function toResponse(): array
 	{
 		return array_merge([

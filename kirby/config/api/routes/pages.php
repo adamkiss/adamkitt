@@ -5,7 +5,7 @@
  * Page Routes
  */
 return [
-
+	// @codeCoverageIgnoreStart
 	[
 		'pattern' => 'pages/(:any)',
 		'method'  => 'GET',
@@ -101,6 +101,15 @@ return [
 		}
 	],
 	[
+		'pattern' => 'pages/(:any)/fields/(:any)/(:all?)',
+		'method'  => 'ALL',
+		'action'  => function (string $id, string $fieldName, string|null $path = null) {
+			if ($page = $this->page($id)) {
+				return $this->fieldApi($page, $fieldName, $path);
+			}
+		}
+	],
+	[
 		'pattern' => 'pages/(:any)/sections/(:any)',
 		'method'  => 'GET',
 		'action'  => function (string $id, string $sectionName) {
@@ -108,12 +117,13 @@ return [
 		}
 	],
 	[
-		'pattern' => 'pages/(:any)/fields/(:any)/(:all?)',
+		'pattern' => 'pages/(:any)/sections/(:any)/(:all?)',
 		'method'  => 'ALL',
-		'action'  => function (string $id, string $fieldName, string $path = null) {
+		'action'  => function (string $id, string $sectionName, string|null $path = null) {
 			if ($page = $this->page($id)) {
-				return $this->fieldApi($page, $fieldName, $path);
+				return $this->sectionApi($page, $sectionName, $path);
 			}
 		}
 	],
+	// @codeCoverageIgnoreEnd
 ];

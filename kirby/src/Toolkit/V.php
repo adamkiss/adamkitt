@@ -4,7 +4,7 @@ namespace Kirby\Toolkit;
 
 use Countable;
 use Exception;
-use Kirby\Cms\Field;
+use Kirby\Content\Field;
 use Kirby\Exception\InvalidArgumentException;
 use Kirby\Http\Idn;
 use Kirby\Uuid\Uuid;
@@ -134,16 +134,13 @@ class V
 			$value = $params[$index] ?? null;
 
 			if (is_array($value) === true) {
-				try {
-					foreach ($value as $key => $item) {
-						if (is_array($item) === true) {
-							$value[$key] = implode('|', $item);
-						}
+				foreach ($value as $key => $item) {
+					if (is_array($item) === true) {
+						$value[$key] = A::implode($item, '|');
 					}
-					$value = implode(', ', $value);
-				} catch (Throwable) {
-					$value = '-';
 				}
+
+				$value = implode(', ', $value);
 			}
 
 			$arguments[$parameter->getName()] = $value;
@@ -284,6 +281,14 @@ V::$validators = [
 		return
 			V::min($value, $min) === true &&
 			V::max($value, $max) === true;
+	},
+
+	/**
+	 * Checks with the callback sent by the user
+	 * It's ideal for one-time custom validations
+	 */
+	'callback' => function ($value, callable $callback): bool {
+		return $callback($value);
 	},
 
 	/**
@@ -449,7 +454,7 @@ V::$validators = [
 	 * Checks if the value matches the given regular expression
 	 */
 	'match' => function ($value, string $pattern): bool {
-		return preg_match($pattern, $value) !== 0;
+		return preg_match($pattern, (string)$value) === 1;
 	},
 
 	/**
@@ -594,6 +599,13 @@ V::$validators = [
 	 */
 	'startsWith' => function (string $value, string $start): bool {
 		return Str::startsWith($value, $start);
+	},
+
+	/**
+	 * Checks for a valid unformatted telephone number
+	 */
+	'tel' => function ($value): bool {
+		return V::match($value, '!^[+]{0,1}[0-9]+$!');
 	},
 
 	/**
