@@ -34,7 +34,7 @@ fonts () { #: subset fonts
 #
 # BOILERPLATE
 #
-r='./r.sh'
+r='./task'
 NAME='tpl-project-name'
 
 about () { #: show help & commands
