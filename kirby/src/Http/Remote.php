@@ -60,6 +60,8 @@ class Remote
 
 	/**
 	 * Constructor
+	 *
+	 * @throws \Exception when the curl request failed
 	 */
 	public function __construct(string $url, array $options = [])
 	{
@@ -91,7 +93,13 @@ class Remote
 
 	public static function __callStatic(string $method, array $arguments = []): static
 	{
-		return new static($arguments[0], array_merge(['method' => strtoupper($method)], $arguments[1] ?? []));
+		return new static(
+			url: $arguments[0],
+			options: array_merge(
+				['method' => strtoupper($method)],
+				$arguments[1] ?? []
+			)
+		);
 	}
 
 	/**
@@ -114,6 +122,7 @@ class Remote
 	 * Sets up all curl options and sends the request
 	 *
 	 * @return $this
+	 * @throws \Exception when the curl request failed
 	 */
 	public function fetch(): static
 	{
@@ -176,10 +185,10 @@ class Remote
 			$headers = [];
 			foreach ($this->options['headers'] as $key => $value) {
 				if (is_string($key) === true) {
-					$headers[] = $key . ': ' . $value;
-				} else {
-					$headers[] = $value;
+					$value = $key . ': ' . $value;
 				}
+
+				$headers[] = $value;
 			}
 
 			$this->curlopt[CURLOPT_HTTPHEADER] = $headers;
@@ -252,6 +261,8 @@ class Remote
 
 	/**
 	 * Static method to send a GET request
+	 *
+	 * @throws \Exception when the curl request failed
 	 */
 	public static function get(string $url, array $params = []): static
 	{
@@ -264,7 +275,10 @@ class Remote
 		$query   = http_build_query($options['data']);
 
 		if (empty($query) === false) {
-			$url = Url::hasQuery($url) === true ? $url . '&' . $query : $url . '?' . $query;
+			$url = match (Url::hasQuery($url)) {
+				true    => $url . '&' . $query,
+				default => $url . '?' . $query
+			};
 		}
 
 		// remove the data array from the options
@@ -330,6 +344,8 @@ class Remote
 
 	/**
 	 * Static method to init this class and send a request
+	 *
+	 * @throws \Exception when the curl request failed
 	 */
 	public static function request(string $url, array $params = []): static
 	{

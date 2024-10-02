@@ -31,6 +31,7 @@ For bug fixes, please create a new branch following the name scheme: `fix/issue_
 - Every bug fix should include a [unit test](#tests) to avoid future regressions. Let us know if you need help with that.
 - Make sure your code [style](#style) matches ours and includes [comments/in-code documentation](#documentation).
 - Make sure your branch is up to date with the latest state on the `develop` branch. [Rebase](https://help.github.com/articles/about-pull-request-merges/) changes before you send the PR.
+- Please *don't* commit updated dist files in the `panel/dist` folder to avoid merge conflicts. We only build the dist files on release. Your branch should only contain changes to the source files.
 
 ### Features
 
@@ -41,6 +42,7 @@ For features create a new branch following the name scheme: `feature/issue_numbe
 - New features should include [unit tests](#tests). Let us know if you need help with that.
 - Make your code [style](#style) matches ours and includes [comments/in-code documentation](#documentation).
 - Make sure your branch is up to date with the latest state on the `develop` branch. [Rebase](https://help.github.com/articles/about-pull-request-merges/) changes before you send the PR.
+- Please *don't* commit updated dist files in the `panel/dist` folder to avoid merge conflicts. We only build the dist files on release. Your branch should only contain changes to the source files.
 
 We try to bundle features in our major releases, e.g. `3.x`. That is why we might only review and, if accepted, merge your PR once an appropriate release is upcoming. Please understand that we cannot merge all feature ideas or that it might take a while. Check out the [roadmap](https://roadmap.getkirby.com) to see upcoming releases.
 
@@ -89,8 +91,6 @@ We use [PHPUnit](https://phpunit.de) for unit test for our PHP code. You can fin
 The Panel doesn't have extensive test coverage yet. That's an area we are still trying to improve.
 
 We use [vitest](https://vitest.dev) for unit tests for JavaScript and Vue components - `.test.js` files next to the actual JavaScript/Vue file.
-
-For integration tests, we use [cypress](https://www.cypress.io) - `.e2e.js` files.
 
 ## And last…
 

@@ -66,9 +66,11 @@ class Collection extends BaseCollection
 	}
 
 	/**
-	 * Internal setter for each object in the Collection.
-	 * This takes care of Component validation and of setting
-	 * the collection prop on each object correctly.
+	 * Internal setter for each object in the Collection;
+	 * override from the Toolkit Collection is needed to
+	 * make the CMS collections case-sensitive;
+	 * child classes can override it again to add validation
+	 * and custom behavior depending on the object type
 	 *
 	 * @param string $id
 	 * @param object $object
@@ -77,6 +79,16 @@ class Collection extends BaseCollection
 	public function __set(string $id, $object): void
 	{
 		$this->data[$id] = $object;
+	}
+
+	/**
+	 * Internal remover for each object in the Collection;
+	 * override from the Toolkit Collection is needed to
+	 * make the CMS collections case-sensitive
+	 */
+	public function __unset($id)
+	{
+		unset($this->data[$id]);
 	}
 
 	/**
@@ -168,9 +180,7 @@ class Collection extends BaseCollection
 				}
 
 				// ignore upper/lowercase for group names
-				if ($i) {
-					$value = Str::lower($value);
-				}
+				$value = $i === true ? Str::lower($value) : (string)$value;
 
 				if (isset($groups->data[$value]) === false) {
 					// create a new entry for the group if it does not exist yet
@@ -209,9 +219,9 @@ class Collection extends BaseCollection
 	 * or ids and then search accordingly.
 	 *
 	 * @param string|object $needle
-	 * @return int
+	 * @return int|false
 	 */
-	public function indexOf($needle): int
+	public function indexOf($needle): int|false
 	{
 		if (is_string($needle) === true) {
 			return array_search($needle, $this->keys());

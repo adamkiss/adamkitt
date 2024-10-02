@@ -123,6 +123,10 @@ class Collection extends Iterator implements Countable
 	 */
 	public function __unset($key)
 	{
+		if ($this->caseSensitive !== true) {
+			$key = strtolower($key);
+		}
+
 		unset($this->data[$key]);
 	}
 
@@ -531,7 +535,7 @@ class Collection extends Iterator implements Countable
 				$value = $this->getAttribute($item, $field);
 
 				// ignore upper/lowercase for group names
-				return $i === true ? Str::lower($value) : $value;
+				return $i === true ? Str::lower($value) : (string)$value;
 			});
 		}
 

@@ -72,10 +72,12 @@
 	"error.blocks.min.singular": "Jūs turite pridėti bent vieną bloką",
 	"error.blocks.validation": "Yra klaida laukelyje \"{field}\" bloke {index} naudojant bloko tipą \"{fieldset}\"",
 
+	"error.cache.type.invalid": "Invalid cache type \"{type}\"",
+
 	"error.email.preset.notFound": "El. pašto paruoštukas \"{name}\" nerastas",
 
 	"error.field.converter.invalid": "Neteisingas konverteris \"{converter}\"",
-	"error.field.type.missing": "Field \"{ name }\": The field type \"{ type }\" does not exist",
+	"error.field.type.missing": "Laukelis \"{ name }\": Šio tipo (\"{ type }\") laukelis neegzistuoja",
 
 	"error.file.changeName.empty": "Pavadinimas negali būti tuščias",
 	"error.file.changeName.permission": "Neturite teisės pakeisti failo pavadinimo \"{filename}\"",
@@ -178,9 +180,10 @@
 	"error.user.delete.lastUser": "Vienintelio vartotojo negalima pašalinti",
 	"error.user.delete.permission": "Neturite leidimo pašalinti vartotoją \"{name}\"",
 	"error.user.duplicate": "Vartotojas su el. paštu \"{email}\" jau yra",
-	"error.user.email.invalid": "Įrašykite teisingą el. pašto adresą",
+	"error.user.email.invalid": "Prašome įrašyti teisingą el. pašto adresą",
 	"error.user.language.invalid": "Įrašykite teisingą kalbą",
 	"error.user.notFound": "Vartotojas \"{name}\" nerastas",
+	"error.user.password.excessive": "Please enter a valid password. Passwords must not be longer than 1000 characters.",
 	"error.user.password.invalid": "Prašome įrašyti galiojantį slaptažodį. Slaptažodį turi sudaryti bent 8 simboliai.",
 	"error.user.password.notSame": "Slaptažodžiai nesutampa",
 	"error.user.password.undefined": "Vartotojas neturi slaptažodžio",
@@ -201,7 +204,7 @@
 	"error.validation.date.between": "Įrašykite datą tarp {min} ir {max}",
 	"error.validation.denied": "Prašome neleisti",
 	"error.validation.different": "Reikšmė neturi būti \"{other}\"",
-	"error.validation.email": "Prašome įrašyti korektišką el. paštą",
+	"error.validation.email": "Prašome įrašyti teisingą el. pašto adresą",
 	"error.validation.endswith": "Reikšmė turi baigtis su \"{end}\"",
 	"error.validation.filename": "Prašome įrašyti teisingą failo pavadinimą",
 	"error.validation.in": "Prašome įrašyti vieną iš šių: ({in})",
@@ -290,7 +293,7 @@
 	"field.pages.empty": "Dar nėra puslapių",
 
 	"field.structure.delete.confirm": "Ar tikrai norite pašalinti šią eilutę?",
-	"field.structure.delete.confirm.all": "Do you really want to delete all entries?",
+	"field.structure.delete.confirm.all": "Ar tikrai norite išrtinti visus įrašus?",
 	"field.structure.empty": "Dar nėra įrašų",
 
 	"field.users.empty": "Dar nėra vartotojų",
@@ -311,7 +314,7 @@
 	"insert.before": "Įterpti prieš",
 	"install": "Įdiegti",
 
-	"installation": "Įdiegimas",
+	"installation": "Installation",
 	"installation.completed": "Valdymo pultas įdiegtas",
 	"installation.disabled": "Pagal nutylėjimą valdymo pulto įdiegimas viešuose serveriuose yra negalimas. Prašome įdiegti lokalioje aplinkoje arba įgalinkite jį su <code>panel.install</code> opcija.",
 	"installation.issues.accounts": "Katalogas <code>/site/accounts</code> neegzistuoja arba neturi įrašymo teisių",
@@ -320,7 +323,7 @@
 	"installation.issues.headline": "Nepavyko įdiegti valdymo pulto",
 	"installation.issues.mbstring": "Plėtinys <code>MB String</code> yra privalomas",
 	"installation.issues.media": "Katalogas <code>/media</code> neegzistuoja arba neturi įrašymo teisių",
-	"installation.issues.php": "Įsitikinkite, kad naudojama <code>PHP 7+</code>",
+	"installation.issues.php": "Įsitikinkite, kad naudojama <code>PHP 8+</code>",
 	"installation.issues.server": "Kirby reikalauja <code>Apache</code>, <code>Nginx</code> arba <code>Caddy</code>",
 	"installation.issues.sessions": "Katalogas <code>/site/sessions</code> neegzistuoja arba neturi įrašymo teisių",
 
@@ -450,7 +453,7 @@
 	"pages.empty": "Dar nėra puslapių",
 	"pages.status.draft": "Juodraščiai",
 	"pages.status.listed": "Paskelbti",
-	"pages.status.unlisted": "Nerodomi",
+	"pages.status.unlisted": "Nerodomas",
 
 	"pagination.page": "Puslapis",
 
@@ -502,7 +505,7 @@
 	"system.issues.eol.plugin": "Your installed version of the { plugin } plugin is has reached end-of-life and will not receive further security updates",
 	"system.issues.debug": "Debugging must be turned off in production",
 	"system.issues.git": "The .git folder seems to be exposed",
-	"system.issues.https": "We recommend HTTPS for all your sites",
+	"system.issues.https": "Rekomenduojame HTTPS visoms svetainėms",
 	"system.issues.kirby": "The kirby folder seems to be exposed",
 	"system.issues.site": "The site folder seems to be exposed",
 	"system.issues.vulnerability.kirby": "Your installation might be affected by the following vulnerability ({ severity } severity): { description }",
@@ -559,7 +562,7 @@
 	"upload.error.noFiles": "Failai nebuvo įkelti",
 	"upload.error.partial": "Failas įkeltas tik iš dalies",
 	"upload.error.tmpDir": "Trūksta laikinojo katalogo",
-	"upload.errors": "Klaida",
+	"upload.errors": "Error",
 	"upload.progress": "Įkėlimas…",
 
 	"url": "Url",

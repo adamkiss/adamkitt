@@ -203,7 +203,6 @@ class App
 	/**
 	 * Applies a hook to the given value
 	 *
-	 * @internal
 	 * @param string $name Full event name
 	 * @param array $args Associative array of named event arguments
 	 * @param string $modify Key in $args that is modified by the hooks
@@ -364,25 +363,23 @@ class App
 	 * by name. All relevant dependencies are
 	 * automatically injected
 	 *
-	 * @param string $name
-	 * @return \Kirby\Cms\Collection|null
+	 * @return \Kirby\Toolkit\Collection|null
+	 * @todo 5.0 Add return type declaration
 	 */
-	public function collection(string $name)
+	public function collection(string $name, array $options = [])
 	{
-		return $this->collections()->get($name, [
+		return $this->collections()->get($name, array_merge($options, [
 			'kirby' => $this,
-			'site'  => $this->site(),
-			'pages' => $this->site()->children(),
+			'site'  => $site = $this->site(),
+			'pages' => $site->children(),
 			'users' => $this->users()
-		]);
+		]));
 	}
 
 	/**
 	 * Returns all user-defined collections
-	 *
-	 * @return \Kirby\Cms\Collections
 	 */
-	public function collections()
+	public function collections(): Collections
 	{
 		return $this->collections ??= new Collections();
 	}
@@ -482,28 +479,23 @@ class App
 
 	/**
 	 * Try to find a controller by name
-	 *
-	 * @param string $name
-	 * @param string $contentType
-	 * @return \Kirby\Toolkit\Controller|null
 	 */
-	protected function controllerLookup(string $name, string $contentType = 'html')
+	protected function controllerLookup(string $name, string $contentType = 'html'): Controller|null
 	{
 		if ($contentType !== null && $contentType !== 'html') {
 			$name .= '.' . $contentType;
 		}
 
-		// controller on disk
-		if ($controller = Controller::load($this->root('controllers') . '/' . $name . '.php')) {
+		// controller from site root
+		$controller   = Controller::load($this->root('controllers') . '/' . $name . '.php');
+		// controller from extension
+		$controller ??= $this->extension('controllers', $name);
+
+		if ($controller instanceof Controller) {
 			return $controller;
 		}
 
-		// registry controller
-		if ($controller = $this->extension('controllers', $name)) {
-			if ($controller instanceof Controller) {
-				return $controller;
-			}
-
+		if ($controller !== null) {
 			return new Controller($controller);
 		}
 
@@ -560,10 +552,8 @@ class App
 
 	/**
 	 * Returns the default language object
-	 *
-	 * @return \Kirby\Cms\Language|null
 	 */
-	public function defaultLanguage()
+	public function defaultLanguage(): Language|null
 	{
 		return $this->defaultLanguage ??= $this->languages()->default();
 	}
@@ -582,22 +572,28 @@ class App
 
 	/**
 	 * Detect the preferred language from the visitor object
-	 *
-	 * @return \Kirby\Cms\Language
 	 */
-	public function detectedLanguage()
+	public function detectedLanguage(): Language|null
 	{
 		$languages = $this->languages();
 		$visitor   = $this->visitor();
 
-		foreach ($visitor->acceptedLanguages() as $lang) {
-			if ($language = $languages->findBy('locale', $lang->locale(LC_ALL))) {
+		foreach ($visitor->acceptedLanguages() as $acceptedLang) {
+			$closure = function ($language) use ($acceptedLang) {
+				$languageLocale = $language->locale(LC_ALL);
+				$acceptedLocale = $acceptedLang->locale();
+
+				return $languageLocale === $acceptedLocale ||
+					$acceptedLocale === Str::substr($languageLocale, 0, 2);
+			};
+
+			if ($language = $languages->filter($closure)?->first()) {
 				return $language;
 			}
 		}
 
-		foreach ($visitor->acceptedLanguages() as $lang) {
-			if ($language = $languages->findBy('code', $lang->code())) {
+		foreach ($visitor->acceptedLanguages() as $acceptedLang) {
+			if ($language = $languages->findBy('code', $acceptedLang->code())) {
 				return $language;
 			}
 		}
@@ -1612,13 +1608,11 @@ class App
 	 * Uses the snippet component to create
 	 * and return a template snippet
 	 *
-	 * @param mixed $name
 	 * @param array|object $data Variables or an object that becomes `$item`
 	 * @param bool $return On `false`, directly echo the snippet
-	 * @return string|null
 	 * @psalm-return ($return is true ? string : null)
 	 */
-	public function snippet($name, $data = [], bool $return = true, bool $slots = false): Snippet|string|null
+	public function snippet(string|array|null $name, $data = [], bool $return = true, bool $slots = false): Snippet|string|null
 	{
 		if (is_object($data) === true) {
 			$data = ['item' => $data];
@@ -1680,7 +1674,6 @@ class App
 	/**
 	 * Trigger a hook by name
 	 *
-	 * @internal
 	 * @param string $name Full event name
 	 * @param array $args Associative array of named event arguments
 	 * @param \Kirby\Cms\Event|null $originalEvent Event object (internal use)

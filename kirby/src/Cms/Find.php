@@ -23,12 +23,12 @@ class Find
 	 * Returns the file object for the given
 	 * parent path and filename
 	 *
-	 * @param string|null $path Path to file's parent model
+	 * @param string $path Path to file's parent model
 	 * @param string $filename Filename
 	 * @return \Kirby\Cms\File|null
 	 * @throws \Kirby\Exception\NotFoundException if the file cannot be found
 	 */
-	public static function file(string $path = null, string $filename)
+	public static function file(string $path, string $filename)
 	{
 		$filename = urldecode($filename);
 		$file     = static::parent($path)->file($filename);
@@ -121,7 +121,10 @@ class Find
 			'site'    => $kirby->site(),
 			'account' => static::user(),
 			'page'    => static::page(basename($path)),
-			'file'    => static::file(...explode('/files/', $path)),
+			// regular expression to split the path at the last
+			// occurrence of /files/ which separates parent path
+			// and filename
+			'file'    => static::file(...preg_split('$.*\K(/files/)$', $path)),
 			'user'    => $kirby->user(basename($path)),
 			default   => throw new InvalidArgumentException('Invalid model type: ' . $modelType)
 		};

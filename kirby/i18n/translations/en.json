@@ -72,6 +72,8 @@
 	"error.blocks.min.singular": "You must add at least one block",
 	"error.blocks.validation": "There's an error on the \"{field}\" field in block {index} using the \"{fieldset}\" block type",
 
+	"error.cache.type.invalid": "Invalid cache type \"{type}\"",
+
 	"error.email.preset.notFound": "The email preset \"{name}\" cannot be found",
 
 	"error.field.converter.invalid": "Invalid converter \"{converter}\"",
@@ -104,9 +106,12 @@
 	"error.form.notSaved": "The form could not be saved",
 
 	"error.language.code": "Please enter a valid code for the language",
+	"error.language.create.permission": "You are not allowed to create a language",
+	"error.language.delete.permission": "You are not allowed to delete the language",
 	"error.language.duplicate": "The language already exists",
 	"error.language.name": "Please enter a valid name for the language",
 	"error.language.notFound": "The language could not be found",
+	"error.language.update.permission": "You are not allowed to update the language",
 
 	"error.layout.validation.block": "There's an error on the \"{field}\" field in block {blockIndex} using the \"{fieldset}\" block type in layout {layoutIndex}",
 	"error.layout.validation.settings": "There's an error in layout {index} settings",
@@ -181,6 +186,7 @@
 	"error.user.email.invalid": "Please enter a valid email address",
 	"error.user.language.invalid": "Please enter a valid language",
 	"error.user.notFound": "The user \"{name}\" cannot be found",
+	"error.user.password.excessive": "Please enter a valid password. Passwords must not be longer than 1000 characters.",
 	"error.user.password.invalid": "Please enter a valid password. Passwords must be at least 8 characters long.",
 	"error.user.password.notSame": "The passwords do not match",
 	"error.user.password.undefined": "The user does not have a password",
@@ -320,7 +326,7 @@
 	"installation.issues.headline": "The panel cannot be installed",
 	"installation.issues.mbstring": "The <code>MB String</code> extension is required",
 	"installation.issues.media": "The <code>/media</code> folder does not exist or is not writable",
-	"installation.issues.php": "Make sure to use <code>PHP 7+</code>",
+	"installation.issues.php": "Make sure to use <code>PHP 8+</code>",
 	"installation.issues.server": "Kirby requires <code>Apache</code>, <code>Nginx</code> or <code>Caddy</code>",
 	"installation.issues.sessions": "The <code>/site/sessions</code> folder does not exist or is not writable",
 
@@ -386,7 +392,7 @@
 	"login.toggleText.password-reset.email": "Forgot your password?",
 	"login.toggleText.password-reset.email-password": "← Back to login",
 
-	"logout": "Logout",
+	"logout": "Log out",
 
 	"menu": "Menu",
 	"meridiem": "AM/PM",
@@ -500,6 +506,7 @@
 	"system.issues.content": "The content folder seems to be exposed",
 	"system.issues.eol.kirby": "Your installed Kirby version has reached end-of-life and will not receive further security updates",
 	"system.issues.eol.plugin": "Your installed version of the { plugin } plugin is has reached end-of-life and will not receive further security updates",
+	"system.issues.eol.php": "Your installed PHP release { release } has reached end-of-life and will not receive further security updates",
 	"system.issues.debug": "Debugging must be turned off in production",
 	"system.issues.git": "The .git folder seems to be exposed",
 	"system.issues.https": "We recommend HTTPS for all your sites",

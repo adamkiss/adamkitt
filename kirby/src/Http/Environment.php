@@ -152,7 +152,7 @@ class Environment
 	 */
 	public function detect(array $options = null, array $info = null): array
 	{
-		$info ??= $_SERVER;
+		$info  ??= $_SERVER;
 		$options = array_merge([
 			'cli'     => null,
 			'allowed' => null
@@ -377,8 +377,8 @@ class Environment
 				$data['https'] = $this->detectHttpsProtocol($fields['proto']);
 			}
 
-			if ($data['port'] === null && $data['https'] === true) {
-				$data['port'] = 443;
+			if ($data['https'] === true) {
+				$data['port'] ??= 443;
 			}
 
 			$data['for'] = $parts['for'] ?? null;
@@ -772,17 +772,27 @@ class Environment
 
 	/**
 	 * Loads and returns options from environment-specific
-	 * PHP files (by host name and server IP address)
+	 * PHP files (by host name and server IP address or CLI)
 	 *
 	 * @param string $root Root directory to load configs from
 	 */
 	public function options(string $root): array
 	{
+		$configCli  = [];
 		$configHost = [];
 		$configAddr = [];
 
 		$host = $this->host();
 		$addr = $this->ip();
+
+		// load the config for the cli
+		if ($this->cli() === true) {
+			$configCli = F::load(
+				file: $root . '/config.cli.php',
+				fallback: [],
+				allowOutput: false
+			);
+		}
 
 		// load the config for the host
 		if (empty($host) === false) {
@@ -802,7 +812,7 @@ class Environment
 			);
 		}
 
-		return array_replace_recursive($configHost, $configAddr);
+		return array_replace_recursive($configCli, $configHost, $configAddr);
 	}
 
 	/**
@@ -922,7 +932,7 @@ class Environment
 	protected function sanitizeScriptPath(string|null $scriptPath = null): string
 	{
 		$scriptPath ??= '';
-		$scriptPath = trim($scriptPath);
+		$scriptPath   = trim($scriptPath);
 
 		// skip all the sanitizing steps if the path is empty
 		if ($scriptPath === '') {
