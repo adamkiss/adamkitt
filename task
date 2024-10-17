@@ -10,7 +10,7 @@ dev () { #: prepare stuff and watch
 
 	COMMANDS=(
 		# Site
-		"npx browser-sync start --port 3000 --proxy 'http://project-local-domain.test/' --watch --files 'content' 'site' --open"
+		"npx browser-sync start --port 3000 --proxy 'http://tpl-project-local-domain.test/' --watch --files 'content' 'site' --open"
 		"npx tailwindcss -i assets/main.css -o $dev/main.css --postcss --watch"
 		"npx esbuild --bundle --watch --sourcemap assets/*.js --outdir=$dev"
 	)
