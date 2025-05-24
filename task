@@ -8,13 +8,15 @@ dev () { #: prepare stuff and watch
 	clean-dev
 	clean-dist
 
+	NAMES=( " bs"     "css"     " js"    )
+	COLORS=("#e26964" "#62baf3" "#f7d147")
 	COMMANDS=(
 		# Site
 		"npx browser-sync start --port 3000 --proxy 'http://tpl-project-local-domain.test/' --watch --files 'content' 'site' --open"
-		"npx tailwindcss -i assets/main.css -o $dev/main.css --postcss --watch"
+		"npx @tailwindcss/cli -i assets/main.css -o $dev/main.css --postcss --watch"
 		"npx esbuild --bundle --watch --sourcemap assets/*.js --outdir=$dev"
 	)
-	NODE_ENV=development npx concurrently -n " bs,css, js" "${COMMANDS[@]}"
+	NODE_ENV=development npx concurrently -n "$(IFS=,;echo "${NAMES[*]}")" -c "$(IFS=,;echo "${COLORS[*]}")" "${COMMANDS[@]}"
 }
 prod () { #: run through the whole pipeline
 	dist="public/assets/dist"
@@ -24,7 +26,7 @@ prod () { #: run through the whole pipeline
 	vendor-assets
 
 	# Site
-	npx tailwindcss -i assets/main.css -o $dist/main.css --postcss
+	npx @tailwindcss/cli -i assets/main.css -o $dist/main.css --postcss
 	npx esbuild --bundle --target=es6 --minify assets/*.js --outdir=$dist
 
 	npx hash-and-manifest
@@ -69,7 +71,7 @@ fonts () { #: subset fonts
 r='./task'
 NAME='tpl-project-name'
 
-about () { #: show help & commands
+h () { #: show help & commands
 	echo "$NAME script runner"
 	echo "Commands:"
 	sed -nr 's/^(.*) \(\).* #: (.*)$/  \1\t\2/p' $r | expand -20
