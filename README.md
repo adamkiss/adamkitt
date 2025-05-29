@@ -7,13 +7,13 @@
 ## Installation
 
 ``` bash
-./r.sh install
+./task install
 
 # Develop front-end
-npm run start
+./task
 # Bundle assets for production
-npm run prod
+./task build
 ```
 Based on the [AdamKiss/Kirby-AdamKitt](https://github.com/adamkiss/kirby-adamkitt).
 
-(c) 2023 tpl-project-author, unless stated otherwise.
+(c) 2025 tpl-project-author, unless stated otherwise.
