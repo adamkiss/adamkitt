@@ -1,6 +1,9 @@
 #!/usr/bin/env zsh
 # shellcheck shell=bash
 
+REMOTE_SERVER='--server--'
+REMOTE_DIR='--website.sk--'
+
 dev () { #: prepare stuff and watch
 	dev="public/assets/dev"
 	
@@ -33,6 +36,21 @@ prod () { #: run through the whole pipeline
 }
 install () { #: Install all dependencies
 	composer install -no && pnpm i
+}
+
+commit_live () { #: Spusti `commit_live` na servri a pullne zmeny na lokal
+	ssh -t $REMOTE_SERVER "cd $REMOTE_DIR; ./task commit_content_locally"
+	git pull
+}
+
+commit_content_locally () { #: Commitni a pushni zmeny na live webstranke (bezi na servri)
+	git add content
+	git commit -m "Zmeny na live webe - $(date '+%Y-%m-%d %H:%M') /skip-ci"
+	git push
+}
+
+gst () { #: Zisti git status na live deployi 
+	ssh -t $REMOTE_SERVER "cd $REMOTE_DIR; git status"
 }
 
 clean-dev() {
