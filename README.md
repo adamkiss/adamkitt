@@ -12,7 +12,7 @@
 # Develop front-end
 ./task
 # Bundle assets for production
-./task build
+./task prod
 ```
 Based on the [AdamKiss/Kirby-AdamKitt](https://github.com/adamkiss/kirby-adamkitt).
 

@@ -8,15 +8,15 @@ dev () { #: prepare stuff and watch
 	clean-dev
 	clean-dist
 
-	NAMES=( " bs"     "css"     " js"    )
-	COLORS=("#e26964" "#62baf3" "#f7d147")
 	COMMANDS=(
-		# Site
+		#e26964 - browser-sync
+		#62baf3 - tailwind
+		#f7d147 - esbuild
 		"npx browser-sync start --port 3000 --proxy 'http://tpl-project-local-domain.test/' --watch --files 'content' 'site' --open"
-		"npx @tailwindcss/cli -i assets/main.css -o $dev/main.css --postcss --watch"
+		"npx @tailwindcss/cli -i assets/main.css -o $dev/main.css --watch"
 		"npx esbuild --bundle --watch --sourcemap assets/*.js --outdir=$dev"
 	)
-	NODE_ENV=development npx concurrently -n "$(IFS=,;echo "${NAMES[*]}")" -c "$(IFS=,;echo "${COLORS[*]}")" "${COMMANDS[@]}"
+	NODE_ENV=development npx concurrently --prefix "█" -c "#e26964,#62baf3,#f7d147" "${COMMANDS[@]}"
 }
 prod () { #: run through the whole pipeline
 	dist="public/assets/dist"
@@ -26,7 +26,7 @@ prod () { #: run through the whole pipeline
 	vendor-assets
 
 	# Site
-	npx @tailwindcss/cli -i assets/main.css -o $dist/main.css --postcss
+	npx @tailwindcss/cli -i assets/main.css -o $dist/main.css --minify
 	npx esbuild --bundle --target=es6 --minify assets/*.js --outdir=$dist
 
 	npx hash-and-manifest
