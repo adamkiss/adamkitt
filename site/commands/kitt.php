@@ -66,6 +66,12 @@ return [
 
 		Dir::remove($root . '/.git');
 
+		F::write($root . "/site/config/config.{$replacements['tpl-project-local-domain']}.test.php", <<<'CONFIG'
+		<?php
+
+		return require_once __DIR__ . '/config.localhost.php';
+		CONFIG);
+
 		$cli->output(<<< CLI
 		All installed! 🎉
 		Next steps:
