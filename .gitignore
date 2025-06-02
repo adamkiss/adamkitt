@@ -13,7 +13,7 @@ node_modules
 
 # Plugins
 # ------------
-site/plugins
+site/plugins/*
 !site/plugins/simple-snippets
 
 # System files
