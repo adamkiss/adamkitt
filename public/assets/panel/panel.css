@@ -1,25 +1,8 @@
-/*
-CUSTOM FONT AND COLOURS
-@font-face {
-    font-family: 'subtitle';
-    src: url('/assets/fonts/Calvino-Semibold.woff2') format('woff2');
-    font-weight: 600;
-    font-style: normal;
+/** Hide the registration NAG */
+menu:has(.k-activation) {
+	display: none !important;
 }
 
-html {
-	font-family: body, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+.k-panel[data-menu=true]:after {
+	z-index: 1 !important;
 }
-h1.k-headline {
-	font-family: 'subtitle';
-	font-weight: 600;
-}
-
-:root {
-	--color-focus: #6052d9;
-	--font-bold: 600;
-}
-.k-topbar, .k-topbar-wrapper:after, .k-topbar-button {
-	background: #322d69 !important;
-}
-*/
