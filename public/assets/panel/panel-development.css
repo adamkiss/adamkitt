@@ -1,8 +1,7 @@
 /** Hide the registration NAG */
-.k-registration, menu:has(.k-activation) {
+menu:has(.k-activation-button) {
 	display: none !important;
 }
-
 .k-panel[data-menu=true]:after {
 	z-index: 1 !important;
 }
