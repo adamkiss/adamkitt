@@ -1,25 +1,26 @@
 #!/usr/bin/env zsh
 # shellcheck shell=bash
 
-REMOTE_SERVER='--server--'
-REMOTE_DIR='--website.sk--'
-
 dev () { #: prepare stuff and watch
 	trap './task prod; exit 0' SIGINT
 	npx vite
 }
 prod () { #: run through the whole pipeline
 	npx vite build
+	vendor-assets
 }
 install () { #: Install all dependencies
 	composer install -no && pnpm i
 }
 
+
+
+REMOTE_SERVER='--server--'
+REMOTE_DIR='--website.sk--'
 commit_live () { #: Spusti `commit_live` na servri a pullne zmeny na lokal
 	ssh -t $REMOTE_SERVER "cd $REMOTE_DIR; ./task commit_content_locally"
 	git pull
 }
-
 commit_content_locally () { #: Commitni a pushni zmeny na live webstranke (bezi na servri)
 	git add content
 	git commit -m "Zmeny na live webe - $(date '+%Y-%m-%d %H:%M') /skip-ci"
@@ -28,13 +29,6 @@ commit_content_locally () { #: Commitni a pushni zmeny na live webstranke (bezi 
 
 gst () { #: Zisti git status na live deployi 
 	ssh -t $REMOTE_SERVER "cd $REMOTE_DIR; git status"
-}
-
-clean-dev() {
-	rm -rf public/assets/dev
-}
-clean-dist() {
-	rm -rf public/assets/dist
 }
 vendor-assets() {
 	rsync -a assets/vendor public/assets
