@@ -1,5 +1,7 @@
 <?php
 
+use App\Vite;
+
 if (! function_exists('s')) {
 	/**
 	 * Short, auto-return snippet call with support for auto-merging certain parameters
@@ -13,13 +15,22 @@ if (! function_exists('s')) {
 				($key === 'content' || str_starts_with($key, 'slot-'))
 				&& is_array($data[$key])
 			) {
-				$data[$key] = implode("", $data[$key]);
+				$data[$key] = implode('', $data[$key]);
 			}
 		}
 		return snippet($snippetName, $data, true);
 	}
 }
 
+if (! function_exists('vite')) {
+	function vite(array|string|null $entries = null) {
+		if (is_null($entries)) {
+			return new Vite();
+		}
+
+		return (new Vite())->entries((array)$entries);
+	}
+}
 /**
  * Stubbing Ray
  *
@@ -27,8 +38,7 @@ if (! function_exists('s')) {
  * if I forget to remove all mentions when going to prod
  */
 class FakeRay {
-	public function __call($name, $args): FakeRay
-	{
+	public function __call($name, $args): FakeRay {
 		return $this;
 	}
 }

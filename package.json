@@ -2,19 +2,16 @@
     "name": "tpl-project-name",
     "description": "tpl-project-description",
     "version": "1.0.0",
+    "type": "module",
     "scripts": {
         ".": "code ."
     },
     "author": "tpl-project-author",
     "license": "UNLICENSED",
-    "devDependencies": {
-        "@tailwindcss/cli": "^4.1.7",
-        "browser-sync": "^3.0.4",
-        "esbuild": "^0.17.0",
-        "hash-and-manifest": "^1.0.2",
-        "tailwindcss": "^4.1.7"
-    },
     "dependencies": {
-        "concurrently": "^9.0.1"
+        "@tailwindcss/vite": "^4.1.10",
+        "picomatch": "^4.0.2",
+        "tailwindcss": "^4.1.7",
+        "vite": "^6.3.5"
     }
 }

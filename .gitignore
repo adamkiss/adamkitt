@@ -1,7 +1,8 @@
 # Production files
 # ------------
-/public/assets/dev
-/public/assets/dist
+/public/assets/*.css
+/public/assets/*.js
+/assets/manifest.json
 /site/snippets/_assets.php
 /public/janitor-*
 

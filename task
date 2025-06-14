@@ -5,34 +5,11 @@ REMOTE_SERVER='--server--'
 REMOTE_DIR='--website.sk--'
 
 dev () { #: prepare stuff and watch
-	dev="public/assets/dev"
-	
-	npx hash-and-manifest empty
-	clean-dev
-	clean-dist
-
-	COMMANDS=(
-		#e26964 - browser-sync
-		#62baf3 - tailwind
-		#f7d147 - esbuild
-		"npx browser-sync start --port 3000 --proxy 'http://tpl-project-local-domain.test/' --watch --files 'content' 'site' --open"
-		"npx @tailwindcss/cli -i assets/main.css -o $dev/main.css --watch"
-		"npx esbuild --bundle --watch --sourcemap assets/*.js --outdir=$dev"
-	)
-	NODE_ENV=development npx concurrently --prefix "█" -c "#e26964,#62baf3,#f7d147" "${COMMANDS[@]}"
+	trap './task prod; exit 0' SIGINT
+	npx vite
 }
 prod () { #: run through the whole pipeline
-	dist="public/assets/dist"
-	export NODE_ENV=production
-	clean-dev
-	clean-dist
-	vendor-assets
-
-	# Site
-	npx @tailwindcss/cli -i assets/main.css -o $dist/main.css --minify
-	npx esbuild --bundle --target=es6 --minify assets/*.js --outdir=$dist
-
-	npx hash-and-manifest
+	npx vite build
 }
 install () { #: Install all dependencies
 	composer install -no && pnpm i
