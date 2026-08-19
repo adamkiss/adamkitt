@@ -7,13 +7,11 @@ dev () { #: prepare stuff and watch
 }
 prod () { #: run through the whole pipeline
 	npx vite build
-	vendor-assets
+	cp -r assets/public/* public/assets/
 }
 install () { #: Install all dependencies
 	composer install -no && pnpm i
 }
-
-
 
 REMOTE_SERVER='--server--'
 REMOTE_DIR='--website.sk--'
@@ -30,14 +28,11 @@ commit_content_locally () { #: Commitni a pushni zmeny na live webstranke (bezi 
 gst () { #: Zisti git status na live deployi 
 	ssh -t $REMOTE_SERVER "cd $REMOTE_DIR; git status"
 }
-vendor-assets() {
-	rsync -a assets/vendor public/assets
-}
 
 fonts () { #: subset fonts
 	setopt extended_glob
 
-	assets='public/assets'
+	assets='assets/public'
 
 	rm -r $assets/fonts 2>/dev/null
 	mkdir -p $assets/fonts 2>/dev/null
@@ -72,7 +67,7 @@ if [[ $# -gt 0 ]]; then
 	if type "$command" 2>/dev/null | grep -q 'function'; then
 		$command "$@"
 	else
-		about
+		h
 		echo "No command '$command'."
 	fi;
 else

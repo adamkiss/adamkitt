@@ -1,7 +1,6 @@
 # Production files
 # ------------
-/public/assets/*.css
-/public/assets/*.js
+/public/assets
 /assets/manifest.json
 /site/snippets/_assets.php
 /public/janitor-*
@@ -9,7 +8,7 @@
 # Libs
 # ------------
 vendor
-!public/assets/vendor
+!/assets/public/vendor
 node_modules
 
 # Plugins
