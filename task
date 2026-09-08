@@ -40,7 +40,7 @@ fonts () { #: subset fonts
 
 	wait
 
-	for f in $assets/fonts/*; do
+	for f in "$assets"/fonts/*; do
 		glyphhanger --formats=woff2 --subset="$(dirname "$0")/$f" --css --LATIN --whitelist="ÁÄÉÍÓÔÚÝáäéíóôúýČĎŇŠŽčďňšžŤťŔŕĽľĹ" --string --json
 	done
 

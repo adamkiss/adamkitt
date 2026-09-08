@@ -1,4 +1,5 @@
 @import "tailwindcss";
+
 @source "../content";
 @source "../site/templates";
 @source "../site/snippets";
@@ -18,13 +19,6 @@
 }
 body {
 	scroll-behavior: smooth
-}
-
-@layer components {
-	.container {
-		@apply max-w-6xl mx-auto;
-		@apply px-4 md:px-6 lg:px-8 xl:px-12;
-	}
 }
 
 @layer utilities {
