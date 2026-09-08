@@ -14,7 +14,7 @@ return [
 		try   { @require_once $root . '/vendor/autoload.php'; }
 		catch (Throwable $th) {
 			// Missing dependecies. Install them first
-			shell_exec('composer install -no && pnpm i');
+			shell_exec('composer install -no && npm ci');
 		} finally { require_once $root . '/vendor/autoload.php'; }
 
 		$templateStrings = Data::decode(<<<YAML
