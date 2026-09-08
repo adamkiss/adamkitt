@@ -9,8 +9,8 @@
 		}
 	],
 	"require": {
-		"php": ">=8.0.0",
-		"getkirby/cms": "5.0.0-rc2"
+		"php": ">=8.4.0",
+		"getkirby/cms": "^5.5"
 	},
 	"config": {
 		"optimize-autoloader": true,
