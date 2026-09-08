@@ -10,7 +10,7 @@ prod () { #: run through the whole pipeline
 	cp -r assets/public/* public/assets/
 }
 install () { #: Install all dependencies
-	composer install -no && pnpm i
+	composer install -no && npm ci
 }
 
 REMOTE_SERVER='--server--'

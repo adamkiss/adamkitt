@@ -9,9 +9,13 @@
     "author": "tpl-project-author",
     "license": "UNLICENSED",
     "dependencies": {
-        "@tailwindcss/vite": "^4.1.10",
+        "@tailwindcss/vite": "^4.3.3",
         "picomatch": "^4.0.2",
-        "tailwindcss": "^4.1.7",
-        "vite": "^6.3.5"
+        "tailwindcss": "^4.3.3",
+        "vite": "^8.2.2"
+    },
+    "allowScripts": {
+        "esbuild@0.25.12": true,
+        "fsevents": false
     }
 }
