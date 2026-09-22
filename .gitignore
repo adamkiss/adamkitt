@@ -44,6 +44,7 @@ Icon
 /storage/logs/*
 /storage/sessions/*
 !/storage/**/.gitkeep
+!/storage/cache/kirby-lens/.gitkeep
 
 # License
 # ---------------
