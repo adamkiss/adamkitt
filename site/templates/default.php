@@ -6,7 +6,7 @@
  * @var \Kirby\Cms\Site $site
  */
 
-s('o:layout'); ?>
+echo s('o:layout'); ?>
 
 <div class="min-h-svh w-full grid place-content-center">
 	<div>
