@@ -25,6 +25,7 @@ Icon
 # ---------------
 /public/media/*
 !/public/media/index.html
+/public/vite
 
 # Lock files
 # ---------------
