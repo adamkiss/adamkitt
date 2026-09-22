@@ -17,7 +17,7 @@
 	<?php endif ?>
 
 	<title>
-		<?= $page->title() . ' • ' . $site->title() ?>
+		<?= $page->title() . ' · ' . $site->title() ?>
 	</title>
 	<script type="module">
 		document.documentElement.classList.replace('no-js', 'js');
@@ -29,7 +29,7 @@
 	<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 	<link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
 
-	<script src="/assets/vendor/alpine-3.10.2.min.js" defer></script>
+	<script src="/assets/vendor/alpine-3.17.4.min.js" defer></script>
 
 	<?= vite([
 		'assets/main.js',
