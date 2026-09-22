@@ -18,6 +18,11 @@ export default defineConfig({
 		}),
 		tailwindcss(),
 	],
+	experimental: {
+		renderBuiltUrl(filename, {type}) {
+			return `/assets/${filename}`;
+		}
+	},
 	resolve: {
 		alias: {
 			// '@fonts': 'resources/fonts',
@@ -43,7 +48,7 @@ function kirby(options) {
 				build: {
 					manifest: 'manifest.json',
 					outDir: 'public/assets',
-					assetsDir: 'dist',
+					assetsDir: '',
 					rollupOptions: {
 						input: options.input,
 					}
@@ -97,7 +102,7 @@ function kirby(options) {
 		},
 		closeBundle() {
 			const builtPath = path.resolve('public/assets/manifest.json');
-			const targetPath = path.resolve(__dirname, options.moveManifest || 'assets/manifest.json');
+			const targetPath = path.resolve(import.meta.dirname, options.moveManifest || 'assets/manifest.json');
 
 			if (fs.existsSync(builtPath)) {
 				fs.copyFileSync(builtPath, targetPath);

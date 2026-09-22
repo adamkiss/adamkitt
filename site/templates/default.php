@@ -1,9 +1,16 @@
-<?php _s('layout') ?>
+<?php /**
+ * Default template for pages
+ *
+ * @var \Kirby\Cms\Page $page
+ * @var \Kirby\Cms\Pages $pages
+ * @var \Kirby\Cms\Site $site
+ */
 
-<div class="container">
-	<h1><?= $page->title() ?></h1>
+s('o:layout'); ?>
 
-	<?= $page->text()->kt() ?>
+<div class="min-h-svh w-full grid place-content-center">
+	<div>
+		<h1><?= $page->title() ?></h1>
+		<?= $page->text()->kt() ?>
+	</div>
 </div>
-
-<?php es() ?>

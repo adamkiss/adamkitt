@@ -6,8 +6,15 @@
 @source "main.js";
 @source inline("styled-html");
 
+/* USE LOCAL URL, LET VITE WILL HANDLE IT
+@font-face {
+	font-family: 'whatever';
+	font-weight: normal;
+	src: url(fonts/webfont.woff2) format("woff2");
+} */
+
 @theme {
-	--breakpoint-xs: 400px;
+	--breakpoint-xs: 25rem;
 }
 
 :root {

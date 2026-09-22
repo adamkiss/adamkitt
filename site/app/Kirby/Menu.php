@@ -1,24 +1,21 @@
 <?php
 
-namespace App;
+namespace App\Kirby;
 
 use Closure;
 use Kirby\Cms\App;
 use Kirby\Cms\Page;
 
-class Menu
-{
+class Menu {
 	public static array $entries = [];
 
 	public static string $path;
 
-	public static function path(): string
-	{
+	public static function path(): string {
 		return static::$path ??= App::instance()->request()->path()->toString();
 	}
 
-	public static function entry(string $label, string $link, ?string $icon = null, Closure|bool|null $current = null): array
-	{
+	public static function entry(string $label, string $link, ?string $icon = null, Closure|bool|null $current = null): array {
 		return static::$entries[] = [
 			'label'   => $label,
 			'link'    => $link,
@@ -27,8 +24,7 @@ class Menu
 		];
 	}
 
-	public static function page(Page|string $page, ?string $icon = null, Closure|bool|null $current = null): ?array
-	{
+	public static function page(Page|string $page, ?string $icon = null, Closure|bool|null $current = null): ?array {
 		if (is_string($page)) {
 			$page = App::instance()->page($page);
 		}
@@ -45,8 +41,7 @@ class Menu
 		);
 	}
 
-	public static function site(string $label, string $icon = 'home'): array
-	{
+	public static function site(string $label, string $icon = 'home'): array {
 		return [
 			'label'   => $label,
 			'icon'    => $icon,

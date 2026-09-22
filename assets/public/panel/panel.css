@@ -3,10 +3,10 @@
 }
 
 :root {
-	--custom-theme: #cf3073;
-
-	--font-sans: TeleNeo, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	--custom-theme: red;
+	--font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 	--color-focus: var(--custom-theme);
+
 	--rsvp-theme: var(--custom-theme) !important;
 }
 

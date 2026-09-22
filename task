@@ -2,15 +2,25 @@
 # shellcheck shell=bash
 
 dev () { #: prepare stuff and watch
+	copy-static
 	trap './task prod; exit 0' SIGINT
 	npx vite
 }
 prod () { #: run through the whole pipeline
 	npx vite build
-	cp -r assets/public/* public/assets/
+	copy-static
 }
 install () { #: Install all dependencies
 	composer install -no && npm ci
+}
+copy-static () { #: Install vendor assets
+	echo "Copying static assets…"
+	cp -rv assets/public/* public/assets/
+}
+
+favicon() { #: Generate favicon from SVG
+	magick -density 300 -define icon:auto-resize=32,16 -background none assets/public/favicon.svg assets/public/favicon.ico
+	magick assets/public/favicon.svg -resize 180x180 assets/public/apple-touch-icon.png
 }
 
 REMOTE_SERVER='--server--'
