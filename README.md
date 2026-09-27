@@ -14,6 +14,7 @@
 # Bundle assets for production
 ./task prod
 ```
-Based on the [AdamKiss/Kirby-AdamKitt](https://github.com/adamkiss/kirby-adamkitt).
 
-(c) 2025 tpl-project-author, unless stated otherwise.
+## Notes
+
+(c) 2026 tpl-project-author, unless stated otherwise.
